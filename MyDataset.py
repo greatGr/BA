@@ -38,8 +38,8 @@ def make_datasets(graph, l_train, l_test, filename_emb, filename_data, emb_type,
 	data_test = torch.cat([data_pos_tens_test, data_neg_tens_test], 0)
 
 	# Wie viele positive und negative samples gibt es
-	print("Train Dataset: {} pos samples, {} neg samples".format(data_pos_tens_train.size(0), data_neg_tens_train.size(0)))
-	print("Test Dataset: {} pos samples, {} neg samples".format(data_pos_tens_test.size(0), data_neg_tens_test.size(0)))
+	print("Train Dataset: {} positive samples, {} negative samples".format(data_pos_tens_train.size(0), data_neg_tens_train.size(0)))
+	print("Test Dataset: {} positive samples, {} negative samples".format(data_pos_tens_test.size(0), data_neg_tens_test.size(0)))
 
 	save_data(data_train, "Train/" + filename_data)
 	save_data(data_test, "Test/" + filename_data)

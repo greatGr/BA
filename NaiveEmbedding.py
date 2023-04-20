@@ -25,6 +25,17 @@ def compute_embedding(graph, filename, norm):
         # AUSGABE: gibt  nicht normalisierte Einbettung als numpy Array zurück
         return np.array(embedding)
 
+#Knoteneinbettung normalisieren
+def normalize_emb(emb):
+
+    emb_norm = []
+    for i in range(len(emb)):
+        norm = np.linalg.norm(emb[i])
+
+        emb_norm += [list(emb[i] / norm)]
+
+    return np.array(emb_norm)
+
 #Knoteneinbettung speichern
 def save_emb(file_name, arr, normalized):
 
@@ -54,17 +65,6 @@ def load_node_emb(file_name, normalized):
 
     #AUSGABE: Numpy Array, das die Einbettungen der einzelnen Knoten enthält
     return node_emb
-
-#Knoteneinbettung normalisieren
-def normalize_emb(emb):
-
-    emb_norm = []
-    for i in range(len(emb)):
-        norm = np.linalg.norm(emb[i])
-
-        emb_norm += [list(emb[i] / norm)]
-
-    return np.array(emb_norm)
 
 #Graph und Einbettung (nur plotten und Abbildungen speichern
 def plot_graph_u_emb(graph, node_embedding, file_name):

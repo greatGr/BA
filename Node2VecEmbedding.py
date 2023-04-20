@@ -36,6 +36,13 @@ def compute_node_embedding(graph, dim, l_walks, n_walks, param_p, param_q, windo
     #AUSGABE:
     return model
 
+#Knoteneinbettung normalisieren
+def normalize_emb(model):
+
+    kv_norm = model.wv.get_normed_vectors()
+
+    return kv_norm
+
 #Knoteneinbettung und Modell speichern
 def save_emb(file_name, arr, normalized):
 
@@ -62,13 +69,6 @@ def load_node_emb(file_name, normalized):
 
     #AUSGABE: Numpy Array, das die Einbettungen der einzelnen Knoten enthält
     return node_emb
-
-#Knoteneinbettung normalisieren
-def normalize_emb(model):
-
-    kv_norm = model.wv.get_normed_vectors()
-
-    return kv_norm
 
 #Einbettung des Graphen erstellen und speichern
 def make_embedding(G, filename, dim, l_walks, n_walks, param_p, param_q, window_size):

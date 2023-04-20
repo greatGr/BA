@@ -24,25 +24,6 @@ def new_graph(number_nodes, filename):
     #AUSGABE: Der Delaunay Graph
     return graph
 
-#Methode speichert Graph im GML Format in Datei
-def save_graph(graph, file_name):
-
-    #Pfad wo die Datei gespeichert wird
-    path = "Graphen/" + file_name
-    #Speichert Adjazenzliste zu Graph in die Datei
-    nx.write_gml(graph, path, stringizer=str)
-
-#Methode lädt im GML Format gespeicherten Graph aus Datei
-def load_graph(file_name):
-
-    #Pfad dahin wo die Datei gespeichert ist
-    path = "Graphen/" + file_name
-    #Lädt Daten aus Datei und erzeugt entsprechenden Graph
-    graph = nx.read_gml(path, destringizer=str)
-
-    #AUSGABE: Der aus der Datei geladene Graph
-    return graph
-
 #Erstellt ein 2d-numpy Array mit number Einträgen
 def new_rand_points(number):
 
@@ -102,6 +83,25 @@ def create_graph(tri, coordinates):
     nx.set_edge_attributes(graph, counted, "count")
 
     #AUSGABE: Der Delaunay-Graph
+    return graph
+
+#Methode speichert Graph im GML Format in Datei
+def save_graph(graph, file_name):
+
+    #Pfad wo die Datei gespeichert wird
+    path = "Graphen/" + file_name
+    #Speichert Adjazenzliste zu Graph in die Datei
+    nx.write_gml(graph, path, stringizer=str)
+
+#Methode lädt im GML Format gespeicherten Graph aus Datei
+def load_graph(file_name):
+
+    #Pfad dahin wo die Datei gespeichert ist
+    path = "Graphen/" + file_name
+    #Lädt Daten aus Datei und erzeugt entsprechenden Graph
+    graph = nx.read_gml(path, destringizer=str)
+
+    #AUSGABE: Der aus der Datei geladene Graph
     return graph
 
 def plot_graph(graph, filename):

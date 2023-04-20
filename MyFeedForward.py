@@ -288,31 +288,7 @@ def load_model(filename):
     return loaded_model
 
 
-    # # Shuffle Tensor
-    # data_tens_train = data_tens_train[torch.randperm(data_tens_train.size()[0])]
-    # data_tens_test = data_tens_test[torch.randperm(data_tens_test.size()[0])]
-    # # In Trainings- und Testdaten aufteilen
-    # border = math.ceil(data_tens_train.size()[0] * 0.7)
-    # data_train = data_tens_train[:border]
-    # data_test = data_tens_train[border:]
-    #
-    # # Feature und Label Tensoren erstellen
-    # data_train_features = data_train[:, :3]
-    # data_train_features = torch.flatten(data_train_features, 1,2)
-    # data_train_labels = data_train[:, 3, 0]
-    # data_train_labels = torch.unsqueeze(data_train_labels, 1)
-    # print("Train:",data_train_labels.size())
-    # data_test_features = data_test[:, :3]
-    # data_test_features = torch.flatten(data_test_features, 1, 2)
-    # data_test_labels = data_test[:, 3, 0]
-    # data_test_labels = torch.unsqueeze(data_test_labels, 1)
-    #
-    # # Trainings- und Testdatenset erstellen
-    # data_train = TensorDataset(data_train_features, data_train_labels)
-    # data_test = TensorDataset(data_test_features, data_test_labels)
-    # # Trainings- und Testdaten wrappen
-    # train_dataloader = DataLoader(data_train, batch_size=16, shuffle=True)
-    # test_dataloader = DataLoader(data_test, batch_size=16, shuffle=True)
+
 
 
 

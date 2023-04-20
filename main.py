@@ -11,17 +11,17 @@ from NaiveEmbedding import compute_embedding
 if __name__ == "__main__":
 
     #Parameter Graph
-    nodes = 64
+    nodes = 128
 
     filename_graph = str(nodes)
 
     # Erstellen Graph
     G = MyGraph.new_graph(nodes, filename_graph)
-    #G = MyGraph.load_graph("64")
+    #G = MyGraph.load_graph(str(nodes)
     print("Diameter: ", nx.diameter(G))
 
     # Naive Einbettung der Knoten
-    filename_emb_naiv = filename_graph + "_naiv_norm"
+    filename_emb_naiv = filename_graph + "_naiv"
     embedding_naiv = compute_embedding(G, filename_emb_naiv, norm=True)
 
     # Parameter Node2Vec Einbettung
