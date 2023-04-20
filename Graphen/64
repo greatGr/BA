@@ -1,0 +1,1335 @@
+graph [
+  node [
+    id 0
+    label "5"
+    x_pos 0.575995159668756
+    y_pos 0.9705642880250317
+    visited 0
+  ]
+  node [
+    id 1
+    label "31"
+    x_pos 0.35902185509389095
+    y_pos 0.9669198228644463
+    visited 0
+  ]
+  node [
+    id 2
+    label "4"
+    x_pos 0.20553546725697935
+    y_pos 0.6727820610012254
+    visited 0
+  ]
+  node [
+    id 3
+    label "41"
+    x_pos 0.2067746668906858
+    y_pos 0.6611584754835996
+    visited 0
+  ]
+  node [
+    id 4
+    label "44"
+    x_pos 0.5277082034960974
+    y_pos 0.805685363844117
+    visited 0
+  ]
+  node [
+    id 5
+    label "28"
+    x_pos 0.18012725177594047
+    y_pos 0.4377595157353833
+    visited 0
+  ]
+  node [
+    id 6
+    label "32"
+    x_pos 0.3851879044837735
+    y_pos 0.8590622037097474
+    visited 0
+  ]
+  node [
+    id 7
+    label "16"
+    x_pos 0.3313851188549565
+    y_pos 0.4791230703882312
+    visited 0
+  ]
+  node [
+    id 8
+    label "1"
+    x_pos 0.042786362963368685
+    y_pos 0.7793901513426169
+    visited 0
+  ]
+  node [
+    id 9
+    label "6"
+    x_pos 0.16985699958359846
+    y_pos 0.8856632316545798
+    visited 0
+  ]
+  node [
+    id 10
+    label "24"
+    x_pos 0.21604795711300295
+    y_pos 0.01939503488375316
+    visited 0
+  ]
+  node [
+    id 11
+    label "55"
+    x_pos 0.020095393990839705
+    y_pos 0.33048589349408564
+    visited 0
+  ]
+  node [
+    id 12
+    label "2"
+    x_pos 0.8766978634701547
+    y_pos 0.9299762653263367
+    visited 0
+  ]
+  node [
+    id 13
+    label "42"
+    x_pos 0.5263559958349288
+    y_pos 0.008251328081664289
+    visited 0
+  ]
+  node [
+    id 14
+    label "52"
+    x_pos 0.29764710777826253
+    y_pos 0.6297012886630011
+    visited 0
+  ]
+  node [
+    id 15
+    label "58"
+    x_pos 0.35866744784221627
+    y_pos 0.794180173633953
+    visited 0
+  ]
+  node [
+    id 16
+    label "3"
+    x_pos 0.4213544048315414
+    y_pos 0.4205694937152036
+    visited 0
+  ]
+  node [
+    id 17
+    label "45"
+    x_pos 0.559579691216283
+    y_pos 0.3046026028533264
+    visited 0
+  ]
+  node [
+    id 18
+    label "26"
+    x_pos 0.41402545445724026
+    y_pos 0.9222607671457086
+    visited 0
+  ]
+  node [
+    id 19
+    label "23"
+    x_pos 0.6518949014222742
+    y_pos 0.35456825857318397
+    visited 0
+  ]
+  node [
+    id 20
+    label "54"
+    x_pos 0.6401720175421415
+    y_pos 0.3240577138588221
+    visited 0
+  ]
+  node [
+    id 21
+    label "30"
+    x_pos 0.9491392868437967
+    y_pos 0.03329663495666613
+    visited 0
+  ]
+  node [
+    id 22
+    label "12"
+    x_pos 0.7878165958631972
+    y_pos 0.501591203196087
+    visited 0
+  ]
+  node [
+    id 23
+    label "17"
+    x_pos 0.6044660427335427
+    y_pos 0.6635877779128938
+    visited 0
+  ]
+  node [
+    id 24
+    label "59"
+    x_pos 0.9967603409204661
+    y_pos 0.09553123013426723
+    visited 0
+  ]
+  node [
+    id 25
+    label "62"
+    x_pos 0.9331144091890474
+    y_pos 0.155263582560901
+    visited 0
+  ]
+  node [
+    id 26
+    label "9"
+    x_pos 0.24965945015784285
+    y_pos 0.22849024684088037
+    visited 0
+  ]
+  node [
+    id 27
+    label "36"
+    x_pos 0.32286523881198814
+    y_pos 0.1590403123027918
+    visited 0
+  ]
+  node [
+    id 28
+    label "49"
+    x_pos 0.32872325022388016
+    y_pos 0.8298580465277107
+    visited 0
+  ]
+  node [
+    id 29
+    label "29"
+    x_pos 0.22124919603120186
+    y_pos 0.1387010132397688
+    visited 0
+  ]
+  node [
+    id 30
+    label "47"
+    x_pos 0.3111201310849847
+    y_pos 0.060416882738575595
+    visited 0
+  ]
+  node [
+    id 31
+    label "35"
+    x_pos 0.432298767122951
+    y_pos 0.23277167053756942
+    visited 0
+  ]
+  node [
+    id 32
+    label "34"
+    x_pos 0.5865499875771131
+    y_pos 0.5567534023876599
+    visited 0
+  ]
+  node [
+    id 33
+    label "15"
+    x_pos 0.6658876005363379
+    y_pos 0.46398564011992094
+    visited 0
+  ]
+  node [
+    id 34
+    label "19"
+    x_pos 0.421650786977974
+    y_pos 0.522499466180601
+    visited 0
+  ]
+  node [
+    id 35
+    label "39"
+    x_pos 0.4653741717998011
+    y_pos 0.602537225179821
+    visited 0
+  ]
+  node [
+    id 36
+    label "27"
+    x_pos 0.8370101750541421
+    y_pos 0.14563547399968002
+    visited 0
+  ]
+  node [
+    id 37
+    label "50"
+    x_pos 0.8735953683432369
+    y_pos 0.2995633519759513
+    visited 0
+  ]
+  node [
+    id 38
+    label "0"
+    x_pos 0.6843500607875995
+    y_pos 0.25599881266401436
+    visited 0
+  ]
+  node [
+    id 39
+    label "56"
+    x_pos 0.869674560170218
+    y_pos 0.5908827406919772
+    visited 0
+  ]
+  node [
+    id 40
+    label "53"
+    x_pos 0.1678364088788049
+    y_pos 0.38431016538940943
+    visited 0
+  ]
+  node [
+    id 41
+    label "18"
+    x_pos 0.20538259398500502
+    y_pos 0.3389036371706299
+    visited 0
+  ]
+  node [
+    id 42
+    label "61"
+    x_pos 0.10092012625794589
+    y_pos 0.23528492050453698
+    visited 0
+  ]
+  node [
+    id 43
+    label "21"
+    x_pos 0.4251217988479854
+    y_pos 0.3218541522300977
+    visited 0
+  ]
+  node [
+    id 44
+    label "37"
+    x_pos 0.3010618899178529
+    y_pos 0.28007249443951043
+    visited 0
+  ]
+  node [
+    id 45
+    label "22"
+    x_pos 0.8129708990943376
+    y_pos 0.6983177413704605
+    visited 0
+  ]
+  node [
+    id 46
+    label "51"
+    x_pos 0.0061035719089646
+    y_pos 0.40798748952788977
+    visited 0
+  ]
+  node [
+    id 47
+    label "13"
+    x_pos 0.8705372608546359
+    y_pos 0.4227664832939264
+    visited 0
+  ]
+  node [
+    id 48
+    label "14"
+    x_pos 0.6309011045437729
+    y_pos 0.9196562074334969
+    visited 0
+  ]
+  node [
+    id 49
+    label "8"
+    x_pos 0.45011923290715106
+    y_pos 0.04440610023546754
+    visited 0
+  ]
+  node [
+    id 50
+    label "46"
+    x_pos 0.33829999868399285
+    y_pos 0.04717135029195196
+    visited 0
+  ]
+  node [
+    id 51
+    label "57"
+    x_pos 0.3938973614384986
+    y_pos 0.6201213251726664
+    visited 0
+  ]
+  node [
+    id 52
+    label "38"
+    x_pos 0.7227642257033476
+    y_pos 0.7181037974603864
+    visited 0
+  ]
+  node [
+    id 53
+    label "33"
+    x_pos 0.8309623219059394
+    y_pos 0.13126748386286902
+    visited 0
+  ]
+  node [
+    id 54
+    label "63"
+    x_pos 0.049334575823238414
+    y_pos 0.8641747667473315
+    visited 0
+  ]
+  node [
+    id 55
+    label "10"
+    x_pos 0.9049995257218193
+    y_pos 0.8714587132334886
+    visited 0
+  ]
+  node [
+    id 56
+    label "20"
+    x_pos 0.8966495323206879
+    y_pos 0.8937485870185584
+    visited 0
+  ]
+  node [
+    id 57
+    label "60"
+    x_pos 0.9279205356569692
+    y_pos 0.6503304089219963
+    visited 0
+  ]
+  node [
+    id 58
+    label "25"
+    x_pos 0.13024838468623579
+    y_pos 0.649364284073143
+    visited 0
+  ]
+  node [
+    id 59
+    label "48"
+    x_pos 0.46288209664522506
+    y_pos 0.965428976682868
+    visited 0
+  ]
+  node [
+    id 60
+    label "43"
+    x_pos 0.8200562771940534
+    y_pos 0.5120091863503528
+    visited 0
+  ]
+  node [
+    id 61
+    label "7"
+    x_pos 0.8971012440714167
+    y_pos 0.43577024378692264
+    visited 0
+  ]
+  node [
+    id 62
+    label "11"
+    x_pos 0.915966627990548
+    y_pos 0.5091196898471855
+    visited 0
+  ]
+  node [
+    id 63
+    label "40"
+    x_pos 0.8958318272110238
+    y_pos 0.915499074838535
+    visited 0
+  ]
+  edge [
+    source 0
+    target 1
+    count 0
+  ]
+  edge [
+    source 0
+    target 4
+    count 0
+  ]
+  edge [
+    source 0
+    target 12
+    count 0
+  ]
+  edge [
+    source 0
+    target 48
+    count 0
+  ]
+  edge [
+    source 0
+    target 59
+    count 0
+  ]
+  edge [
+    source 1
+    target 54
+    count 0
+  ]
+  edge [
+    source 1
+    target 28
+    count 0
+  ]
+  edge [
+    source 1
+    target 9
+    count 0
+  ]
+  edge [
+    source 1
+    target 18
+    count 0
+  ]
+  edge [
+    source 1
+    target 6
+    count 0
+  ]
+  edge [
+    source 1
+    target 59
+    count 0
+  ]
+  edge [
+    source 2
+    target 3
+    count 0
+  ]
+  edge [
+    source 2
+    target 14
+    count 0
+  ]
+  edge [
+    source 2
+    target 15
+    count 0
+  ]
+  edge [
+    source 2
+    target 9
+    count 0
+  ]
+  edge [
+    source 2
+    target 28
+    count 0
+  ]
+  edge [
+    source 2
+    target 8
+    count 0
+  ]
+  edge [
+    source 2
+    target 58
+    count 0
+  ]
+  edge [
+    source 3
+    target 5
+    count 0
+  ]
+  edge [
+    source 3
+    target 14
+    count 0
+  ]
+  edge [
+    source 3
+    target 58
+    count 0
+  ]
+  edge [
+    source 4
+    target 6
+    count 0
+  ]
+  edge [
+    source 4
+    target 52
+    count 0
+  ]
+  edge [
+    source 4
+    target 18
+    count 0
+  ]
+  edge [
+    source 4
+    target 35
+    count 0
+  ]
+  edge [
+    source 4
+    target 51
+    count 0
+  ]
+  edge [
+    source 4
+    target 59
+    count 0
+  ]
+  edge [
+    source 4
+    target 48
+    count 0
+  ]
+  edge [
+    source 4
+    target 23
+    count 0
+  ]
+  edge [
+    source 4
+    target 15
+    count 0
+  ]
+  edge [
+    source 5
+    target 7
+    count 0
+  ]
+  edge [
+    source 5
+    target 40
+    count 0
+  ]
+  edge [
+    source 5
+    target 41
+    count 0
+  ]
+  edge [
+    source 5
+    target 14
+    count 0
+  ]
+  edge [
+    source 5
+    target 58
+    count 0
+  ]
+  edge [
+    source 5
+    target 46
+    count 0
+  ]
+  edge [
+    source 6
+    target 18
+    count 0
+  ]
+  edge [
+    source 6
+    target 15
+    count 0
+  ]
+  edge [
+    source 6
+    target 28
+    count 0
+  ]
+  edge [
+    source 7
+    target 34
+    count 0
+  ]
+  edge [
+    source 7
+    target 51
+    count 0
+  ]
+  edge [
+    source 7
+    target 16
+    count 0
+  ]
+  edge [
+    source 7
+    target 14
+    count 0
+  ]
+  edge [
+    source 7
+    target 41
+    count 0
+  ]
+  edge [
+    source 7
+    target 44
+    count 0
+  ]
+  edge [
+    source 8
+    target 9
+    count 0
+  ]
+  edge [
+    source 8
+    target 54
+    count 0
+  ]
+  edge [
+    source 8
+    target 58
+    count 0
+  ]
+  edge [
+    source 8
+    target 46
+    count 0
+  ]
+  edge [
+    source 9
+    target 28
+    count 0
+  ]
+  edge [
+    source 9
+    target 54
+    count 0
+  ]
+  edge [
+    source 10
+    target 11
+    count 0
+  ]
+  edge [
+    source 10
+    target 13
+    count 0
+  ]
+  edge [
+    source 10
+    target 50
+    count 0
+  ]
+  edge [
+    source 10
+    target 30
+    count 0
+  ]
+  edge [
+    source 10
+    target 29
+    count 0
+  ]
+  edge [
+    source 10
+    target 42
+    count 0
+  ]
+  edge [
+    source 11
+    target 46
+    count 0
+  ]
+  edge [
+    source 11
+    target 40
+    count 0
+  ]
+  edge [
+    source 11
+    target 42
+    count 0
+  ]
+  edge [
+    source 12
+    target 52
+    count 0
+  ]
+  edge [
+    source 12
+    target 56
+    count 0
+  ]
+  edge [
+    source 12
+    target 48
+    count 0
+  ]
+  edge [
+    source 12
+    target 63
+    count 0
+  ]
+  edge [
+    source 13
+    target 21
+    count 0
+  ]
+  edge [
+    source 13
+    target 38
+    count 0
+  ]
+  edge [
+    source 13
+    target 49
+    count 0
+  ]
+  edge [
+    source 13
+    target 53
+    count 0
+  ]
+  edge [
+    source 13
+    target 17
+    count 0
+  ]
+  edge [
+    source 13
+    target 31
+    count 0
+  ]
+  edge [
+    source 13
+    target 50
+    count 0
+  ]
+  edge [
+    source 14
+    target 15
+    count 0
+  ]
+  edge [
+    source 14
+    target 51
+    count 0
+  ]
+  edge [
+    source 15
+    target 28
+    count 0
+  ]
+  edge [
+    source 15
+    target 51
+    count 0
+  ]
+  edge [
+    source 16
+    target 17
+    count 0
+  ]
+  edge [
+    source 16
+    target 32
+    count 0
+  ]
+  edge [
+    source 16
+    target 33
+    count 0
+  ]
+  edge [
+    source 16
+    target 43
+    count 0
+  ]
+  edge [
+    source 16
+    target 44
+    count 0
+  ]
+  edge [
+    source 16
+    target 34
+    count 0
+  ]
+  edge [
+    source 17
+    target 38
+    count 0
+  ]
+  edge [
+    source 17
+    target 20
+    count 0
+  ]
+  edge [
+    source 17
+    target 31
+    count 0
+  ]
+  edge [
+    source 17
+    target 33
+    count 0
+  ]
+  edge [
+    source 17
+    target 43
+    count 0
+  ]
+  edge [
+    source 17
+    target 19
+    count 0
+  ]
+  edge [
+    source 18
+    target 59
+    count 0
+  ]
+  edge [
+    source 19
+    target 20
+    count 0
+  ]
+  edge [
+    source 19
+    target 47
+    count 0
+  ]
+  edge [
+    source 19
+    target 37
+    count 0
+  ]
+  edge [
+    source 19
+    target 33
+    count 0
+  ]
+  edge [
+    source 19
+    target 22
+    count 0
+  ]
+  edge [
+    source 19
+    target 38
+    count 0
+  ]
+  edge [
+    source 20
+    target 38
+    count 0
+  ]
+  edge [
+    source 21
+    target 25
+    count 0
+  ]
+  edge [
+    source 21
+    target 24
+    count 0
+  ]
+  edge [
+    source 21
+    target 53
+    count 0
+  ]
+  edge [
+    source 22
+    target 23
+    count 0
+  ]
+  edge [
+    source 22
+    target 32
+    count 0
+  ]
+  edge [
+    source 22
+    target 39
+    count 0
+  ]
+  edge [
+    source 22
+    target 45
+    count 0
+  ]
+  edge [
+    source 22
+    target 47
+    count 0
+  ]
+  edge [
+    source 22
+    target 52
+    count 0
+  ]
+  edge [
+    source 22
+    target 33
+    count 0
+  ]
+  edge [
+    source 22
+    target 60
+    count 0
+  ]
+  edge [
+    source 23
+    target 35
+    count 0
+  ]
+  edge [
+    source 23
+    target 32
+    count 0
+  ]
+  edge [
+    source 23
+    target 52
+    count 0
+  ]
+  edge [
+    source 24
+    target 25
+    count 0
+  ]
+  edge [
+    source 24
+    target 57
+    count 0
+  ]
+  edge [
+    source 24
+    target 55
+    count 0
+  ]
+  edge [
+    source 24
+    target 61
+    count 0
+  ]
+  edge [
+    source 24
+    target 62
+    count 0
+  ]
+  edge [
+    source 25
+    target 37
+    count 0
+  ]
+  edge [
+    source 25
+    target 53
+    count 0
+  ]
+  edge [
+    source 25
+    target 61
+    count 0
+  ]
+  edge [
+    source 25
+    target 36
+    count 0
+  ]
+  edge [
+    source 26
+    target 27
+    count 0
+  ]
+  edge [
+    source 26
+    target 42
+    count 0
+  ]
+  edge [
+    source 26
+    target 29
+    count 0
+  ]
+  edge [
+    source 26
+    target 41
+    count 0
+  ]
+  edge [
+    source 26
+    target 44
+    count 0
+  ]
+  edge [
+    source 27
+    target 31
+    count 0
+  ]
+  edge [
+    source 27
+    target 50
+    count 0
+  ]
+  edge [
+    source 27
+    target 29
+    count 0
+  ]
+  edge [
+    source 27
+    target 44
+    count 0
+  ]
+  edge [
+    source 27
+    target 49
+    count 0
+  ]
+  edge [
+    source 27
+    target 30
+    count 0
+  ]
+  edge [
+    source 29
+    target 30
+    count 0
+  ]
+  edge [
+    source 29
+    target 42
+    count 0
+  ]
+  edge [
+    source 30
+    target 50
+    count 0
+  ]
+  edge [
+    source 31
+    target 49
+    count 0
+  ]
+  edge [
+    source 31
+    target 43
+    count 0
+  ]
+  edge [
+    source 31
+    target 44
+    count 0
+  ]
+  edge [
+    source 32
+    target 33
+    count 0
+  ]
+  edge [
+    source 32
+    target 34
+    count 0
+  ]
+  edge [
+    source 32
+    target 35
+    count 0
+  ]
+  edge [
+    source 34
+    target 35
+    count 0
+  ]
+  edge [
+    source 34
+    target 51
+    count 0
+  ]
+  edge [
+    source 35
+    target 51
+    count 0
+  ]
+  edge [
+    source 36
+    target 37
+    count 0
+  ]
+  edge [
+    source 36
+    target 38
+    count 0
+  ]
+  edge [
+    source 36
+    target 53
+    count 0
+  ]
+  edge [
+    source 37
+    target 47
+    count 0
+  ]
+  edge [
+    source 37
+    target 38
+    count 0
+  ]
+  edge [
+    source 37
+    target 61
+    count 0
+  ]
+  edge [
+    source 38
+    target 53
+    count 0
+  ]
+  edge [
+    source 39
+    target 60
+    count 0
+  ]
+  edge [
+    source 39
+    target 62
+    count 0
+  ]
+  edge [
+    source 39
+    target 45
+    count 0
+  ]
+  edge [
+    source 39
+    target 57
+    count 0
+  ]
+  edge [
+    source 40
+    target 46
+    count 0
+  ]
+  edge [
+    source 40
+    target 42
+    count 0
+  ]
+  edge [
+    source 40
+    target 41
+    count 0
+  ]
+  edge [
+    source 41
+    target 42
+    count 0
+  ]
+  edge [
+    source 41
+    target 44
+    count 0
+  ]
+  edge [
+    source 43
+    target 44
+    count 0
+  ]
+  edge [
+    source 45
+    target 52
+    count 0
+  ]
+  edge [
+    source 45
+    target 55
+    count 0
+  ]
+  edge [
+    source 45
+    target 57
+    count 0
+  ]
+  edge [
+    source 46
+    target 54
+    count 0
+  ]
+  edge [
+    source 46
+    target 58
+    count 0
+  ]
+  edge [
+    source 47
+    target 60
+    count 0
+  ]
+  edge [
+    source 47
+    target 61
+    count 0
+  ]
+  edge [
+    source 48
+    target 52
+    count 0
+  ]
+  edge [
+    source 49
+    target 50
+    count 0
+  ]
+  edge [
+    source 52
+    target 56
+    count 0
+  ]
+  edge [
+    source 52
+    target 55
+    count 0
+  ]
+  edge [
+    source 55
+    target 56
+    count 0
+  ]
+  edge [
+    source 55
+    target 57
+    count 0
+  ]
+  edge [
+    source 55
+    target 63
+    count 0
+  ]
+  edge [
+    source 56
+    target 63
+    count 0
+  ]
+  edge [
+    source 57
+    target 62
+    count 0
+  ]
+  edge [
+    source 60
+    target 61
+    count 0
+  ]
+  edge [
+    source 60
+    target 62
+    count 0
+  ]
+  edge [
+    source 61
+    target 62
+    count 0
+  ]
+]
