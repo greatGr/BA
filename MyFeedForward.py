@@ -46,7 +46,7 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
 
     model = FeedForward(3*dim_emb, list_hidden)
 
-    print("NN Architektur: ", model)
+    #print("NN Architektur: ", model)
 
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)
     criterion = nn.BCELoss()
@@ -59,10 +59,10 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
         draw_curve(epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename_data)
 
     # Evaluate the model on the test data
-    accuracy, precision, recall = evaluate(model, test_dataload)
-    print('Accuracy: {:.4f}'.format(accuracy))
-    print('Precision: {:.4f}'.format(precision))
-    print('Recall: {:.4f}'.format(recall))
+    #accuracy, precision, recall = evaluate(model, test_dataload)
+    #print('Accuracy: {:.4f}'.format(accuracy))
+    #print('Precision: {:.4f}'.format(precision))
+    #print('Recall: {:.4f}'.format(recall))
 
     save_model(model, filename_data)
 
@@ -272,7 +272,10 @@ def draw_curve(current_epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename):
         ax0.legend()
         ax1.legend()
 
-    path = "Abbildungen/Abbildung_Loss/" + filename + ".png"
+    if "naiv" in filename:
+        path = "Abbildungen/Abbildung_Loss/naiv/" + filename + ".png"
+    else:
+        path = "Abbildungen/Abbildung_Loss/n2v/" + filename + ".png"
     fig.savefig(path)
 
 #Parameter des trainierten Modells speichern
@@ -282,7 +285,7 @@ def save_model(model, filename):
 
 #Gespeicherte Parameter des Modells laden
 def load_model(filename):
-    path = "Modell_FeedFoward/" + filename + ".pth"
+    path = "Modell_FeedForward/" + filename + ".pth"
     loaded_model = torch.load(path)
 
     return loaded_model
