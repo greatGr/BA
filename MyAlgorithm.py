@@ -35,7 +35,9 @@ def compute_all_paths(graph, filename, bool_norm):
                 dist_shortest_path = len(nx.bidirectional_shortest_path(graph, start, ziel)) -1
                 #computed path zu dict paths an richtiger stelle hinzufügen
                 dict_paths[dist_shortest_path] += [computed_path]
-                dict_diffs[dist_shortest_path] += [(len(computed_path)-1)/dist_shortest_path]
+                dict_diffs[dist_shortest_path] += [(len(computed_path) - 1) / dist_shortest_path]
+                #dict_diffs[dist_shortest_path] += [(len(computed_path)-1)/dist_shortest_path]
+
 
     plot_diffs(dict_diffs, filename)
 
@@ -44,20 +46,18 @@ def compute_path(G, start, ziel, model, embedding):
     reset_visited(G)
     backtracking_list = []
 
-    print("kürzester Weg", nx.shortest_path(G, start, ziel))
+    #print("kürzester Weg", nx.shortest_path(G, start, ziel))
 
     path = [start]
     current = start
     G.nodes[current]["visited"] = 1
     while ziel not in G[current]:
         moved = 0
-        predictions = []
         for n in G[current]:
             if (G.nodes[n]["visited"] == 0) and (n not in backtracking_list):
                 input = np.concatenate((embedding[int(current)], embedding[int(n)], embedding[int(ziel)]), axis=0)
                 #print("Input", input)
                 prediction = model(torch.tensor(input))
-                predictions += [prediction]
                 G.nodes[n]["visited"] = 1
                 if (prediction >= 0.5):
                     path += [n]
@@ -74,26 +74,28 @@ def compute_path(G, start, ziel, model, embedding):
     while len(path) !=len(set(path)):
         remove_circle(path)
 
-    print("Finaler Weg", path)
+    #print("Finaler Weg", path)
     return path
 
 def backtracking(G, current, path, backtracking_list):
 
     if current == path[0]:
-        # Wir sind wieder beim Startknoten angekommen, backtracking nicht möglich
+        # Backtracking auf dem Startknoten nicht möglich
         backtracking_list += [current]
+        #Der nächste Knoten wird zufällig ausgewählt
         next = random_choice(G, current, path)
         return next
     elif (path[-1] in backtracking_list):
-        #Auf jetzigem KNoten wurde auch schonmal backtracking gemacht
+        #Auf jetzigem Knoten wurde schonmal backtracking gemacht
         next = random_choice(G, current, path)
         return next
     elif (path[-2] in backtracking_list):
-        # Auf vorherigem KNoten wurde auch schonmal backtracking gemacht
+        # Auf vorherigem Knoten wurde schonmal backtracking gemacht
         backtracking_list += [current]
         next = random_choice(G, current, path)
         return next
 
+    #Ganz normaler Fall Backtracking
     backtracking_list += [current]
     for n in G[current]:
         if n not in path:
@@ -104,16 +106,12 @@ def backtracking(G, current, path, backtracking_list):
     return next
 
 def random_choice(G, current, path):
-    n_list = list(G[current].keys())
-    while len(n_list) != 0 :
-        next = random.choice(n_list)
-        n_list.remove(next)
-        if next not in path:
-            G.nodes[next]["visited"] = 1
-            path += [next]
-            return str(next)
-    #Alle Nachbarknoten des aktuellen Knotens sind bereits Teil des Wegs, einfach einen wählen am Ende Kreise entfernen
+
+    #komplett zufällig einen wählen am Ende Kreise entfernen
     next = random.choice(list(G[current].keys()))
+    G.nodes[next]["visited"] = 1
+    path += [next]
+
     return next
 
 #Funktioniert gerade nicht
@@ -139,6 +137,7 @@ def max_choice(G, current, path, ziel, model, embedding):
 
 def remove_circle(path):
     duplicates = {}
+
     for i, num in enumerate(path):
         if num not in duplicates:
             duplicates[num] = [i]
@@ -157,7 +156,9 @@ def remove_circle(path):
     if max_dup is not None:
         start = min(duplicates[max_dup])
         end = max(duplicates[max_dup])
-        del path[start:end+1]
+        del path[start+1:end+1]
+
+
 
 def reset_visited(graph):
     for node in graph.nodes():
@@ -172,7 +173,7 @@ def plot_diffs(dict_diffs, filename):
         x = 0
     fig, axs = plt.subplots(nrows = n_rows, ncols = n_rows+x)
     fig.tight_layout(h_pad=5, w_pad=2)
-    fig.set_size_inches(9, 6)
+    fig.set_size_inches(9, 7)
     for i, key in enumerate(dict_diffs):
         diffs = dict_diffs[key]
         x_ind = (i % (n_rows+x))
@@ -180,10 +181,12 @@ def plot_diffs(dict_diffs, filename):
 
         axs[y_ind][x_ind].hist(diffs, bins=20)
         axs[y_ind][x_ind].set_title(f"Wege Länge {key}")
-        axs[y_ind][x_ind].set_xlabel("Abweichung als \n berechnete/tatsächliche Länge")
+        axs[y_ind][x_ind].set_xlabel("Abweichung als \n (berechnete/tatssächliche Länge")
         axs[y_ind][x_ind].set_ylabel("Anzahl")
 
         print("Länge {}: maximale Abweichung {}".format(key, max(diffs)))
+        #print("Länge {}: minimale Abweichung {}".format(key, min(diffs)))
+
 
     path = "Abbildungen/Histogramme_Abweichung/" + filename + ".png"
     fig.savefig(path)

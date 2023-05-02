@@ -45,12 +45,13 @@ if __name__ == "__main__":
     filename_data_n2v = filename_emb_n2v
     filename_paths = filename_graph + "_asp"
 
-    # Listen (Anzahl Startknoten, Länge der Wege)
+    # Listen (Anzahl Startknoten, Länge der Wege) für erstellen der Trainings-und Testdaten
     l_train = []
     for i in range(2, nx.diameter(G)+1):
         l_train += [(nodes, i)]
     l_test = []
 
+    #Datensets erstellen
     #MyDataset.make_datasets(G, l_train, l_test, filename_emb_naiv, filename_data_naiv, emb_type="naiv", normalized=True)
     #MyDataset.make_datasets(G, l_train, l_test, filename_emb_n2v, filename_data_n2v, emb_type="n2v", normalized=True)
 
