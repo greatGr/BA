@@ -1,3 +1,4 @@
+import csv
 import math
 import numpy as np
 from matplotlib import pyplot as plt
@@ -40,9 +41,12 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
     y_acc['test'] = []
 
     fig = plt.figure()
-    fig.tight_layout()
+
     ax0 = fig.add_subplot(121, title="BCE Loss")
     ax1 = fig.add_subplot(122, title="Accuracy")
+
+    fig.tight_layout(w_pad=3)
+    fig.set_size_inches(9, 7)
 
     model = FeedForward(3*dim_emb, list_hidden)
 
@@ -65,6 +69,7 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
     #print('Recall: {:.4f}'.format(recall))
 
     save_model(model, filename_data)
+    save_data(y_loss, y_acc, filename_data)
 
 def prep_datasets(filename_data, split):
     data_tens_train = MyDataset.load_data("Train/" + filename_data)
@@ -265,8 +270,12 @@ def draw_curve(current_epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename):
     x_epoch.append(current_epoch)
     ax0.plot(x_epoch, y_loss['train'], 'bo', label='train', ms=2)
     ax0.plot(x_epoch, y_loss['test'], 'ro', label='test', ms=2)
+    ax0.set_xlabel("Epoche")
+    ax0.set_ylabel("Loss")
     ax1.plot(x_epoch, y_acc['train'], 'bo', label='train', ms=2)
     ax1.plot(x_epoch, y_acc['test'], 'ro', label='test', ms=2)
+    ax1.set_xlabel("Epoche")
+    ax1.set_ylabel("Accuracy")
 
     if current_epoch == 0:
         ax0.legend()
@@ -277,6 +286,23 @@ def draw_curve(current_epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename):
     else:
         path = "Abbildungen/Abbildung_Loss/n2v/" + filename + ".png"
     fig.savefig(path)
+
+def save_data(loss, acc, filename):
+    dict_list = [("Loss", loss), ("Acc", acc)]
+
+    filename_cvs = "Cvs Files/" + filename + ".cvs"
+
+    with open(filename_cvs, "w", newline="") as csvfile:
+        # Define the CSV file writer
+        writer = csv.DictWriter(csvfile, fieldnames=["dict name", "train", "test"])
+
+        # Write the header row
+        writer.writeheader()
+
+        # Write the dictionary values as rows
+        for dict_name, d in dict_list:
+            row = {"dict name": dict_name, **d}
+            writer.writerow(row)
 
 #Parameter des trainierten Modells speichern
 def save_model(model, filename):

@@ -10,7 +10,7 @@ import NaiveEmbedding
 import Node2VecEmbedding
 
 # Erstellt die Datensets und speichert sie
-def make_datasets(graph, l_train, l_test, filename_emb, filename_data, emb_type, normalized):
+def make_datasets(graph, l_train, l_test, filename_emb, emb_type, normalized):
 	# Erstellen Daten, Graph, Anzahl Startknoten, Tiefe Breitensuche wird übergeben
 	data_pos_train, data_neg_train = create_data(graph, l_train, filename_emb, emb_type, normalized)
 	data_pos_test, data_neg_test = create_data(graph, l_test, filename_emb, emb_type, normalized)
@@ -41,8 +41,8 @@ def make_datasets(graph, l_train, l_test, filename_emb, filename_data, emb_type,
 	#print("Train Dataset: {} positive samples, {} negative samples".format(data_pos_tens_train.size(0), data_neg_tens_train.size(0)))
 	#print("Test Dataset: {} positive samples, {} negative samples".format(data_pos_tens_test.size(0), data_neg_tens_test.size(0)))
 
-	save_data(data_train, "Train/" + filename_data)
-	save_data(data_test, "Test/" + filename_data)
+	save_data(data_train, "Train/" + filename_emb)
+	save_data(data_test, "Test/" + filename_emb)
 
 #Erstellt Tensor mit positiven und negativen Datenpaaren
 def create_data(G, tupel_liste, filename, emb_type, normaliz):
