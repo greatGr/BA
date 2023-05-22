@@ -71,12 +71,18 @@ def load_node_emb(file_name, normalized):
     return node_emb
 
 #Einbettung des Graphen erstellen und speichern
-def make_embedding(G, filename, dim, l_walks, n_walks, param_p, param_q, window_size):
-    model = compute_node_embedding(G, dim, l_walks, n_walks, param_p, param_q, window_size)
+def make_embedding(G_liste, dim_liste, l_walks_liste, n_walks_liste, p_liste, q_liste, w_size_liste):
+    filename_list = []
+    for i, tup in enumerate(G_liste):
+        model = compute_node_embedding(tup[0], dim_liste[i], l_walks_liste[i], n_walks_liste[i], p_liste[i], q_liste[i], w_size_liste[i])
 
-    emb = model.wv.__getitem__(np.arange(len(model.wv)))
+        emb = model.wv.__getitem__(np.arange(len(model.wv)))
+        emb_norm = normalize_emb(model)
 
-    save_emb(filename, emb, normalized=False)
-    #Vektoren normalisieren
-    emb_norm = normalize_emb(model)
-    save_emb(filename, emb_norm, normalized=True)
+        filename = str(tup[1])+"_"+str(tup[0].number_of_nodes())+"_"+str(dim_liste[i])+"_"+str(l_walks_liste[i])+"_"+str(n_walks_liste[i])+"_"+str(p_liste[i])+"_"+str(q_liste[i])+"_"+str(w_size_liste[i])
+        filename_list.append(filename)
+        #Normalisierte und nicht normalisierte Einbettung speichern
+        save_emb(filename, emb, normalized=False)
+        save_emb(filename, emb_norm, normalized=True)
+
+    return filename_list

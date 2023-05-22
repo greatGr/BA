@@ -1,5 +1,7 @@
 import csv
 import math
+import os
+
 import numpy as np
 from matplotlib import pyplot as plt
 from torch import Size
@@ -50,8 +52,6 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
 
     model = FeedForward(3*dim_emb, list_hidden)
 
-    #print("NN Architektur: ", model)
-
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)
     criterion = nn.BCELoss()
 
@@ -68,12 +68,16 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
     #print('Precision: {:.4f}'.format(precision))
     #print('Recall: {:.4f}'.format(recall))
 
-    save_model(model, filename_data)
+    last_dot_index = filename_data.rfind('.')
+    save_model(model, filename_data[:last_dot_index])
     save_data(y_loss, y_acc, filename_data)
 
 def prep_datasets(filename_data, split):
     data_tens_train = MyDataset.load_data("Train/" + filename_data)
-    data_tens_test = MyDataset.load_data("Test/" + filename_data)
+    if os.path.exists("Test/" + filename_data):
+        data_tens_test = MyDataset.load_data("Test/" + filename_data)
+    else:
+        data_tens_test = torch.empty(0)
 
     if (data_tens_test.numel() == 0):
         data_tens_train = data_tens_train[torch.randperm(data_tens_train.size()[0])]
@@ -283,6 +287,8 @@ def draw_curve(current_epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename):
 
     if "naiv" in filename:
         path = "Abbildungen/Abbildung_Loss/naiv/" + filename + ".png"
+    elif "force" in filename:
+        path = "Abbildungen/Abbildung_Loss/force/" + filename + ".png"
     else:
         path = "Abbildungen/Abbildung_Loss/n2v/" + filename + ".png"
     fig.savefig(path)
@@ -290,7 +296,7 @@ def draw_curve(current_epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename):
 def save_data(loss, acc, filename):
     dict_list = [("Loss", loss), ("Acc", acc)]
 
-    filename_cvs = "Cvs Files/" + filename + ".cvs"
+    filename_cvs = "Cvs Files Training/" + filename + ".cvs"
 
     with open(filename_cvs, "w", newline="") as csvfile:
         # Define the CSV file writer

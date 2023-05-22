@@ -1,9 +1,22 @@
-import numpy as np
+import os
+import shortuuid
 from matplotlib import pyplot as plt
-from networkx import diameter
 from numpy import random
 from scipy.spatial import Delaunay
 import networkx as nx
+
+
+def make_graphs(tupel_list):
+    graph_list = []
+    for tupel in tupel_list:
+        for i in range(tupel[0]):
+            identifier = shortuuid.uuid()[:8]
+            filename_graph = identifier + "_" + str(tupel[1])
+            G = new_graph(tupel[1], filename_graph)
+            graph_list.append((G, identifier))
+
+    return graph_list
+
 
 #Methode erstellt Delaunay Graph mit x Knoten
 def new_graph(number_nodes, filename):
@@ -19,10 +32,11 @@ def new_graph(number_nodes, filename):
 
     # Graph speichern
     save_graph(graph, filename)
-    graph = load_graph(filename)
+    result = filename.split("_")
+    G = load_graph(result[0], str(number_nodes))
 
     #AUSGABE: Der Delaunay Graph
-    return graph
+    return G
 
 #Erstellt ein 2d-numpy Array mit number Einträgen
 def new_rand_points(number):
@@ -87,23 +101,39 @@ def create_graph(tri, coordinates):
 
 #Methode speichert Graph im GML Format in Datei
 def save_graph(graph, file_name):
+    directory_path = "Graphen/" + str(graph.number_of_nodes())
+
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
 
     #Pfad wo die Datei gespeichert wird
-    path = "Graphen/" + file_name
+    path = "Graphen/" + str(graph.number_of_nodes()) + "/"+ file_name
     #Speichert Adjazenzliste zu Graph in die Datei
     nx.write_gml(graph, path, stringizer=str)
 
 #Methode lädt im GML Format gespeicherten Graph aus Datei
-def load_graph(file_name):
+def load_graph(identifier, number_nodes):
 
     #Pfad dahin wo die Datei gespeichert ist
-    path = "Graphen/" + file_name
+    path = "Graphen/" + number_nodes + "/" + identifier + "_" + number_nodes
     #Lädt Daten aus Datei und erzeugt entsprechenden Graph
     graph = nx.read_gml(path, destringizer=str)
 
     #AUSGABE: Der aus der Datei geladene Graph
     return graph
 
+# Lädt alle Graphen aus Ordner mit bestimmter Knotenanzahl
+def load_all_graphs(name_directory):
+    graph_list = []
+    path_dir = "Graphen/" + name_directory
+    for filename in os.listdir(path_dir):
+        split = filename.split("_")
+        G = load_graph(split[0], split[1])
+        graph_list.append((G, split[0]))
+
+    return graph_list
+
+#Eventuell funktionierts gerade nicht, veraltet
 def plot_graph(graph, filename):
     # Dictionary erstellen mit den Knoten als Keys und ihren Positionen als Einträgen
     x_pos = nx.get_node_attributes(graph, "x_pos")
@@ -122,4 +152,3 @@ def plot_graph(graph, filename):
     # Abbildung speichern
     path = "Abbildungen/Del Graphen" + filename
     plt.savefig(path)
-

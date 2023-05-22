@@ -1,18 +1,23 @@
+import csv
 import math
 
 import networkx as nx
 import numpy as np
 import torch
 import random
+import ast
 
 from matplotlib import pyplot as plt
 
 import MyFeedForward
+import MyGraph
 import NaiveEmbedding
 import Node2VecEmbedding
 
 
-def compute_all_paths(graph, filename, bool_norm):
+def compute_all_paths(filename, bool_norm):
+    result = filename.split("_")
+    graph = MyGraph.load_graph(result[0], result[1])
 
     if "naiv" in filename:
         embedding = NaiveEmbedding.load_node_emb(filename, normalized=bool_norm)
@@ -27,22 +32,28 @@ def compute_all_paths(graph, filename, bool_norm):
         dict_paths[i] = []
         dict_diffs[i] = []
 
-
+    count_sum = 0
     for start in graph.nodes():
         for ziel in graph.nodes():
             if (start != ziel) and (ziel not in graph[start]):
+                #computed_path = compute_path_greedy(graph, start, ziel, model, embedding)
                 computed_path = compute_path(graph, start, ziel, model, embedding)
-                dist_shortest_path = len(nx.bidirectional_shortest_path(graph, start, ziel)) -1
-                #computed path zu dict paths an richtiger stelle hinzufügen
-                dict_paths[dist_shortest_path] += [computed_path]
-                dict_diffs[dist_shortest_path] += [(len(computed_path) - 1) / dist_shortest_path]
-                #dict_diffs[dist_shortest_path] += [(len(computed_path)-1)/dist_shortest_path]
+                if computed_path != -1:
+                    dist_shortest_path = len(nx.bidirectional_shortest_path(graph, start, ziel)) -1
+                    #computed path zu dict paths an richtiger stelle hinzufügen
+                    dict_paths[dist_shortest_path] += [computed_path]
+                    dict_diffs[dist_shortest_path] += [(len(computed_path) - 1) / dist_shortest_path]
+                    #dict_diffs[dist_shortest_path] += [(len(computed_path)-1)/dist_shortest_path]
+                else:
+                    count_sum += 1
 
+    print("Summe nicht berechneter Wege", count_sum)
 
+    save_data(dict_diffs, filename)
     plot_diffs(dict_diffs, filename)
 
 
-def compute_path(G, start, ziel, model, embedding):
+def compute_path_greedy(G, start, ziel, model, embedding):
     reset_visited(G)
     backtracking_list = []
 
@@ -56,7 +67,6 @@ def compute_path(G, start, ziel, model, embedding):
         for n in G[current]:
             if (G.nodes[n]["visited"] == 0) and (n not in backtracking_list):
                 input = np.concatenate((embedding[int(current)], embedding[int(n)], embedding[int(ziel)]), axis=0)
-                #print("Input", input)
                 prediction = model(torch.tensor(input))
                 G.nodes[n]["visited"] = 1
                 if (prediction >= 0.5):
@@ -74,8 +84,30 @@ def compute_path(G, start, ziel, model, embedding):
     while len(path) !=len(set(path)):
         remove_circle(path)
 
-    #print("Finaler Weg", path)
     return path
+
+def compute_path(G, start, ziel, model, embedding):
+
+    path = [start]
+    current = start
+    while ziel not in G[current]:
+        predictions_dict = {}
+        for n in G[current]:
+            if n not in path:
+                input = np.concatenate((embedding[int(current)], embedding[int(n)], embedding[int(ziel)]), axis=0)
+                pred_n = model(torch.tensor(input))
+                predictions_dict[n] = pred_n
+        if predictions_dict != {}:
+            max_value = max(predictions_dict.values())
+            max_key = [k for k, v in predictions_dict.items() if v == max_value][0]
+            path += [max_key]
+            current = max_key
+        else:
+            return -1
+    path += [ziel]
+
+    return path
+
 
 def backtracking(G, current, path, backtracking_list):
 
@@ -158,8 +190,6 @@ def remove_circle(path):
         end = max(duplicates[max_dup])
         del path[start+1:end+1]
 
-
-
 def reset_visited(graph):
     for node in graph.nodes():
         graph.nodes[node]["visited"] = 0
@@ -167,27 +197,48 @@ def reset_visited(graph):
 def plot_diffs(dict_diffs, filename):
 
     n_rows = int(math.sqrt(len(dict_diffs)))
-    if (int(math.sqrt(len(dict_diffs)))-math.sqrt(len(dict_diffs)))>0:
-        x = 1
-    else:
-        x = 0
-    fig, axs = plt.subplots(nrows = n_rows, ncols = n_rows+x)
+    n_cols = math.ceil(len(dict_diffs)/n_rows)
+    fig, axs = plt.subplots(nrows = n_rows, ncols = n_cols)
     fig.tight_layout(h_pad=5, w_pad=2)
     fig.set_size_inches(9, 7)
     for i, key in enumerate(dict_diffs):
         diffs = dict_diffs[key]
-        x_ind = (i % (n_rows+x))
-        y_ind = (i//(n_rows+x))
+        if isinstance(diffs, str):
+            diffs_list = ast.literal_eval(diffs)
+        else:
+            diffs_list = diffs
 
-        axs[y_ind][x_ind].hist(diffs, bins=20)
-        axs[y_ind][x_ind].set_title(f"Wege Länge {key}")
-        axs[y_ind][x_ind].set_xlabel("Abweichung als \n (berechnete/tatssächliche Länge")
+        x_ind = (i % (n_cols))
+        y_ind = (i//(n_cols))
+
+        axs[y_ind][x_ind].hist(list(diffs_list), bins=20)
+        axs[y_ind][x_ind].set_title(f"Wege Länge {int(key)}")
+        axs[y_ind][x_ind].set_xlabel("Abweichung als \n (berechn./tats.Länge)")
         axs[y_ind][x_ind].set_ylabel("Anzahl")
 
-        print("Länge {}: maximale Abweichung {}".format(key, max(diffs)))
+        print("Länge {}: maximale Abweichung {}".format(int(key), max(diffs_list)))
         #print("Länge {}: minimale Abweichung {}".format(key, min(diffs)))
 
 
     path = "Abbildungen/Histogramme_Abweichung/" + filename + ".png"
     fig.savefig(path)
 
+def save_data(dict, filename):
+
+    filename_cvs = "Csv Files Computed Paths/" + filename + ".csv"
+
+    with open(filename_cvs, "w", newline="") as csvfile:
+        # Define the CSV file writer
+        writer = csv.writer(csvfile)
+
+        for key, value in dict.items():
+            writer.writerow([key, value])
+
+def load_data(filename):
+    path = "Csv Files Computed Paths/" + filename + ".csv"
+    with open(path, "r") as csvfile:
+        reader = csv.reader(csvfile)
+
+        my_dict = dict(reader)
+
+    return my_dict

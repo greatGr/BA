@@ -1,48 +1,36 @@
 import numpy as np
 import networkx as nx
 
-
 #Berechnet Einbettung, enthält Distanz von betrachtetem Knoten zu jedem anderen Knoten
-def compute_embedding(graph, filename, bool_norm):
-    embedding = []
+def compute_embedding(G_liste):
+    for tupel in G_liste:
+        embedding = []
 
-    for start in graph.nodes:
-        dist_list = []
-        for ziel in graph.nodes:
-            dist = len(nx.bidirectional_shortest_path(graph, start, ziel)) - 1
-            dist_list += [dist]
-        embedding += [dist_list]
+        for start in tupel[0].nodes:
+            dist_list = []
+            for ziel in tupel[0].nodes:
+                dist = len(nx.bidirectional_shortest_path(tupel[0], start, ziel)) - 1
+                dist_list += [dist]
+            embedding += [dist_list]
 
+        embedding_normalized = normalize_emb(embedding)
 
-    #Einbettung und normalisierte Einbettung speichern
-    save_emb(filename, np.array(embedding), normalized=False)
-    embedding_normalized = normalize_emb(embedding)
-    save_emb(filename, embedding_normalized, normalized=True)
-
-    #print("Nicht normalisierte naive Einbettung:", np.array(embedding))
-    #print("Normalisierte naive Einbettung:", embedding_normalized)
-
-    if bool_norm:
-        # AUSGABE: gibt normalisierte Einbettung als numpy Array zurück
-        return embedding_normalized
-    else:
-        # AUSGABE: gibt  nicht normalisierte Einbettung als numpy Array zurück
-        return np.array(embedding)
+        filename = str(tupel[1]) + "_" + str(tupel[0].number_of_nodes()) + "_" + "naiv"
+        #Einbettung und normalisierte Einbettung speichern
+        save_emb(filename, np.array(embedding), normalized=False)
+        save_emb(filename, embedding_normalized, normalized=True)
 
 #Knoteneinbettung normalisieren
 def normalize_emb(emb):
-
     emb_norm = []
     for i in range(len(emb)):
         norm = np.linalg.norm(emb[i])
-
         emb_norm += [list(emb[i] / norm)]
 
     return np.array(emb_norm)
 
 #Knoteneinbettung speichern
 def save_emb(file_name, arr, normalized):
-
     if normalized:
         #Pfad wo die Knoteneinbettung gespeichert werden soll
         path_node_emb = "Knoteneinbettung/normalized/" + file_name
@@ -51,19 +39,13 @@ def save_emb(file_name, arr, normalized):
 
     np.save(path_node_emb, arr, allow_pickle=False)
 
-    #Pfad wo das Modell gespeichert werden soll
-    #path_model ="Modell_Einbettung/" + file_name
-    #Speichern des Modells
-    #model.save(path_model)
-
 #Knoteneinbettung laden
 def load_node_emb(file_name, normalized):
-
     if normalized:
         #Pfad wo zu ladende Datei gespeichert ist
-        path = "Knoteneinbettung/normalized/" + file_name + ".npy"
+        path = "Knoteneinbettung/normalized/" + file_name + "_naiv.npy"
     else:
-        path = "Knoteneinbettung/not_normalized/" + file_name + ".npy"
+        path = "Knoteneinbettung/not_normalized/" + file_name + "_naiv.npy"
 
     node_emb = np.load(path)
 
