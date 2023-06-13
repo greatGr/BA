@@ -74,15 +74,18 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
 
 def prep_datasets(filename_data, split):
     data_tens_train = MyDataset.load_data("Train/" + filename_data)
-    if os.path.exists("Test/" + filename_data):
+    if os.path.exists("Daten/Test/" + filename_data):
         data_tens_test = MyDataset.load_data("Test/" + filename_data)
     else:
         data_tens_test = torch.empty(0)
 
     if (data_tens_test.numel() == 0):
         data_tens_train = data_tens_train[torch.randperm(data_tens_train.size()[0])]
+        #Wie viel Prozent des ganzen Datensatzes werden verwendet
+        part = math.ceil(data_tens_train.size()[0] * split)
+        data_tens_train = data_tens_train[:part]
         # In Trainings- und Testdaten aufteilen
-        border = math.ceil(data_tens_train.size()[0] * split)
+        border = math.ceil(data_tens_train.size()[0] * 0.7)
         data_train = data_tens_train[:border]
         data_test = data_tens_train[border:]
     else:

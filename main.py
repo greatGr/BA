@@ -18,18 +18,25 @@ if __name__ == "__main__":
     # GRAPHEN ERSTELLEN/LADEN
 
     #Liste zu erstellender Graphen [(Anzahl Graphen, Knotenanzahl), ...(...,...)]
-    tupel_liste_graphs = [(1, 128)]
+    tupel_liste_graphs = [(1, 100)]
     G_list = MyGraph.make_graphs(tupel_liste_graphs)
 
 
     #Einzelnen Graph laden
-    # G_list = []
-    # identifier = "RrzcJVeC"
-    # number_nodes = "256"
+    #G_list = []
+    # identifier = "DHAqRZdc"
+    # number_nodes = "10"
+    # identifier = "9GExUnfS"
+    # number_nodes = "25"
+    # identifier = "9yem2BgV"
+    # number_nodes = "3"
     # G = MyGraph.load_graph(identifier, number_nodes)
+    # G_list.append((G, identifier))
+
+
     # print("Diam", nx.diameter(G))
-    # for i in range(nx.diameter(G)-1):
-    #     G_list.append((G, identifier))
+    # for i in range(6):
+    #G_list.append((G, identifier))
 
 
     #Alle Graphen mit der bestimmten Anzahl Knoten laden
@@ -53,10 +60,10 @@ if __name__ == "__main__":
     # EINBETTUNGEN BERECHNEN
 
     # Naive Einbettung
-    NaiveEmbedding.compute_embedding(G_list)
+    #NaiveEmbedding.compute_embedding(G_list)
 
     # Parameter Node2Vec Einbettung
-    dim_n2v_list = [64]
+    dim_n2v_list = [100]
     l_walks_list = [nx.diameter(G_list[0][0])]
     n_walks_list = [10]
     # p: ist per default 1, 1/p ist die Wahrscheinlichkeit zum Vorgängerknoten zurückzugehen
@@ -77,29 +84,38 @@ if __name__ == "__main__":
     filename_list_n2v = Node2VecEmbedding.make_embedding(G_list, dim_n2v_list, l_walks_list, n_walks_list, param_p_list, param_q_list, w_size_list)
 
     #Parameter Force Embedding noch nicht benutzungsbereit
-    # dim_force = 80
-    # c_0 = 0.05
-    # c_1 = 0.05
-    # c_2 = 0.1
-    # c_3 = 0.1
-    #sollten kleiner als 0.5 sein
-    # c_4 = 0
-    # c_5 = 0
-    # const_conv = 0.01
-    # tolerance = 1e-2
-    # filename_force = filename_graph + "_" + str(dim_force) + "_" + str(c_0) + "_" + str(c_1) +"_"+ str(c_2) + "_" + str(c_3) +"_"+ str(c_4) + "_" + str(c_5) +"_force"
-    # MyDataset.make_tripel_list(G, l_train, l_test, filename_force)
-    # ForceEmbedding.compute_force_embedding(G, dim_force, c_0, c_1, c_2, c_3, c_4, c_5, const_conv, tolerance, filename_force)
+    # dim_force = 2
+    # #für kraft sv und vt
+    # c_0 = 0.3
+    # c_1 = 0.3
+    # c_2 = 0.3
+    # c_3 = 0.3
+    # #für Kraft länge kanten
+    # c_4 = 0.05
+    # c_5 = 0.05
+    # const_conv = 0.5
+    # tolerance = 2e-1
+    #
+    # for tup in G_list:
+    #     filename_force = tup[1] + "_" + str(tup[0].number_of_nodes()) + "_" + str(dim_force) + "_" + str(c_0) + "_" + str(c_1) +"_"+ str(c_2) + "_" + str(c_3) +"_"+ str(c_4) + "_" + str(c_5) +"_force"
+    #     #Liste aus welchen Wegen TRipel erstellt werden
+    #     l_train = []
+    #     for i in range(2, nx.diameter(tup[0])+1):
+    #         l_train += [(tup[0].number_of_nodes(), i)]
+    #
+    #     MyDataset.make_tripel_list(tup[0], filename_force, l_train)
+    #
+    #     ForceEmbedding.compute_force_embedding(tup[0], dim_force, c_0, c_1, c_2, c_3, c_4, c_5, const_conv, tolerance, filename_force)
 
 
     # DATENSETS ERSTELLEN
-    # Listen die enthalten welche Längen von Wegen für Training/Test verwendet werden sollen
+    #Listen die enthalten welche Längen von Wegen für Training/Test verwendet werden sollen
     l_train = []
     for tup in G_list:
-        l_train.append(tuple(range(2, nx.diameter(tup[0])+1)))
+         l_train.append(tuple(range(2, nx.diameter(tup[0])+1)))
     l_test = []
 
-    MyDataset.make_datasets(asp_list, G_list, l_train, emb_type="naiv")
+    #MyDataset.make_datasets(asp_list, G_list, l_train, emb_type="naiv")
     MyDataset.make_datasets(asp_list, G_list, l_train, emb_type="n2v", filename_list = filename_list_n2v)
     # MyDataset.make_datasets(G_list, emb_type="force"l_train, , )
 
@@ -107,36 +123,59 @@ if __name__ == "__main__":
     # TRAINING DES NEURONALEN NETZES
 
     #Parameter für Training neuronales Netz
-    data_split = 0.7
-    dim_emb = 64
-    list_hidden = [64, 32, 16, 4]
+    data_split = 0.1
+    dim_emb = 75
+    list_hidden = [40, 20, 10,5]
     learning_rate = 0.05
-    num_epochs_naiv = 3
-    num_epochs_n2v = 3
+    # #num_epochs_naiv = 3
+    num_epochs_n2v = 80
     #num_epochs_force = 100
 
-    for tup in G_list:
-        filename_data_naiv = str(tup[1]) + "_" + str(tup[0].number_of_nodes()) + "_naiv.pt"
-        MyFeedForward.train_classifier(filename_data_naiv, data_split, tup[0].number_of_nodes(), list_hidden, learning_rate, num_epochs_naiv)
+    #Training node2vec
     for i in filename_list_n2v:
-        MyFeedForward.train_classifier(i + ".pt", data_split, dim_emb, list_hidden, learning_rate, num_epochs_n2v)
+        for j in range(10):
+            MyFeedForward.train_classifier(i + "_" + str(data_split * j) + ".pt", data_split * j, dim_emb, list_hidden, learning_rate, num_epochs_n2v)
 
     # path_dir = "Daten/Train/256"
     # for filename_n2v in os.listdir(path_dir):
     #     MyFeedForward.train_classifier(filename_n2v, data_split, dim_emb, list_hidden, learning_rate, num_epochs_n2v)
 
-    #MyFeedForward.train_classifier(filename_force, data_split, dim_force, list_hidden, learning_rate, num_epochs_force)
+    #Training naive Einbettung
+    # for tup in G_list:
+    #      filename_data_naiv = str(tup[1]) + "_" + str(tup[0].number_of_nodes()) + "_naiv.pt"
+    #      MyFeedForward.train_classifier(filename_data_naiv, data_split, tup[0].number_of_nodes(), list_hidden, learning_rate, num_epochs_naiv)
 
 
     # WEGE MIT CLASSIFIER BERECHNEN
 
     # MyAlgorithm.compute_all_paths(G, filename_data_naiv, bool_norm=True)
-    for i in filename_list_n2v:
-        MyAlgorithm.compute_all_paths(i, bool_norm=True)
+    # for i in filename_list_n2v:
+    #     MyAlgorithm.compute_all_paths(i, bool_norm=True)
     # MyAlgorithm.compute_all_paths(G, filename_force, bool_norm=True)
+    # filename_emb = "2M93qusV_128_96_10_10_10_0.1_1"
+    # MyAlgorithm.compute_all_paths(filename_emb, bool_norm=True)
 
 
     # STUFF PLOTTEN veraltet
 
-    # dict_dif = MyAlgorithm.load_data("128_128_10_0.1_1_n2v")
-    # MyAlgorithm.plot_diffs(dict_dif, "128_128_10_0.1_1_n2v")
+    # dict_dif = MyAlgorithm.load_data(filename_emb)
+    # values_list = []
+    # for value in dict_dif.values():
+    #     # Remove the wrapping strings using string slicing
+    #     value = value[1:-1]
+    #     # Convert the modified string back to a list using eval()
+    #     value_list = eval(value)
+    #     # Add the list to the big list
+    #     values_list.extend(value_list)
+    # #print(values_list)
+    # #count = values_list.count(1.0)
+    #
+    # count = 0
+    # for value in values_list:
+    #     if 1.0 <= value <= 1.0:
+    #         count += 1
+    # frequency = count / len(values_list)
+    #
+    # print(frequency)
+    # #MyAlgorithm.plot_diffs(dict_dif, filename_emb)
+    #MyAlgorithm.plot_diff_sum(dict_dif, filename_emb)

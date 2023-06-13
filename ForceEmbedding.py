@@ -1,3 +1,5 @@
+import math
+
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
@@ -5,36 +7,6 @@ import scipy.spatial.distance as dist
 
 import MyDataset
 
-#Funktion, die alle Kräfte berechnet
-def calculate_forces(G, pos, data_train, c_0, c_1, c_2, c_3, c_4, c_5):
-    #Liste mit allen wirkenden Kräften initialisieren
-    forces = np.zeros((len(G.nodes()), pos.shape[1]))
-
-    for i in range(len(data_train)):
-        tripel = data_train[i]
-        s = tripel[0]
-        v = tripel[1]
-        t = tripel[2]
-
-        dist_eucl_s_v = dist.euclidean(pos[s], pos[v])
-        dist_eucl_v_t = dist.euclidean(pos[v], pos[t])
-        dist_node_s_v = (len(nx.bidirectional_shortest_path(G, str(s), str(v))) - 1)
-        dist_node_v_t = (len(nx.bidirectional_shortest_path(G, str(v), str(t))) - 1)
-
-        forces[s] += (pos[v] - pos[s]) * (dist_eucl_s_v - dist_node_s_v) * c_0
-        forces[t] += (pos[v] - pos[t]) * (dist_eucl_v_t - dist_node_v_t) * c_1
-        forces[v] += (pos[s] - pos[v]) * (dist_eucl_s_v - dist_node_s_v) * c_2 + (pos[t] - pos[v]) * (dist_eucl_v_t - dist_node_v_t) * c_3
-
-        for n in list(G.neighbors(str(v))):
-            dist_eucl_n_v = dist.euclidean(pos[int(n)], pos[v])
-
-            forces[int(n)] += (pos[v] - pos[int(n)]) * (dist_eucl_n_v - 0.1) * c_4
-            forces[v] += (pos[int(n)] - pos[v]) * (dist_eucl_n_v - 0.1) * c_5
-
-
-        #print("forces aufegteilt", forces[s], forces[t], forces[v])
-
-    return forces
 
 def compute_force_embedding(graph, dim, c_0, c_1, c_2, c_3, c_4, c_5, const_conv, tolerance, filename):
 
@@ -43,9 +15,14 @@ def compute_force_embedding(graph, dim, c_0, c_1, c_2, c_3, c_4, c_5, const_conv
 
     #noch samples die verwendet werden solllen auswählen
 
-    # Zufällige Anfangspositionen der Knoten
-    pos = np.random.rand(len(graph.nodes()), dim)
+    # Approx durchschnittliche Kantenlänge
+    average_degree = sum(dict(graph.degree()).values()) / graph.number_of_nodes()
+    mean_edge_length = 1 / average_degree
 
+    # Zufällige Anfangspositionen der Knoten aus dem Einheitsquadrat
+    pos = np.random.rand(len(graph.nodes()), dim)
+    #Größer skalieren
+    pos = pos/mean_edge_length
 
     delta_pos = np.inf
 
@@ -53,6 +30,7 @@ def compute_force_embedding(graph, dim, c_0, c_1, c_2, c_3, c_4, c_5, const_conv
 
     # Durchlaufen bis es konvergiert
     while delta_pos > tolerance:
+    #while 5 > iter_count:
         iter_count += 1
 
         # Alte pos speichern
@@ -62,48 +40,100 @@ def compute_force_embedding(graph, dim, c_0, c_1, c_2, c_3, c_4, c_5, const_conv
         forces = calculate_forces(graph, pos, data_train, c_0, c_1, c_2, c_3, c_4, c_5)
 
         # Neue Positionene der Knoten
-        pos += forces * const_conv
-        #print("Pos", pos, "forces", forces)
+        pos = pos + forces * const_conv
+
+        # Aktuelle Einbettung plotten
+        # if dim == 2:
+        #     show_graph(graph, pos)
 
         # Compute the change in node positions
         delta_pos = np.linalg.norm(pos - old_pos)
 
-        print(iter_count, delta_pos)
-        #print("pos", pos)
+        print(iter_count, "Unterschied pos", delta_pos)
 
-
-
-    print("Number iterations force emb:", iter_count)
-
+    #Einbettung normalisieren
     pos_norm = normalize_emb(pos)
+    #Normalisierte und nicht normalisierte Einbettung speichern
     save_emb(filename, pos_norm, normalized=True)
     save_emb(filename, pos, normalized=False)
 
-    draw_graph(graph, pos, filename)
+    #Nur in 2D, Graph mit Einbettung plotten
+    if dim == 2:
+        draw_graph(graph, pos, filename)
 
+#Funktion, die alle Kräfte berechnet
+def calculate_forces(G, pos, data_train, c_0, c_1, c_2, c_3, c_4, c_5):
 
-def draw_graph(graph, pos, filename):
+    #Liste mit allen wirkenden Kräften initialisieren
+    forces = np.zeros((len(G.nodes()), pos.shape[1]))
+    scale = np.zeros((len(G.nodes()), 1))
 
+    # Alle Trainingstripel durchgehen
+    for i in range(len(data_train)):
+        s = data_train[i][0]
+        v = data_train[i][1]
+        t = data_train[i][2]
+
+        d_eucl_s_v = dist.euclidean(pos[s], pos[v])
+        d_eucl_v_t = dist.euclidean(pos[v], pos[t])
+        d_node_s_v = nx.shortest_path_length(G, source=s, target=v)
+        d_node_v_t = nx.shortest_path_length(G, source=v, target=t)
+
+        forces[s] += (pos[v] - pos[s]) * (d_eucl_s_v - d_node_s_v) * c_0
+        scale[s] += 1
+        forces[t] += (pos[v] - pos[t]) * (d_eucl_v_t - d_node_v_t) * c_1
+        scale[t] += 1
+        forces[v] += (pos[s] - pos[v]) * (d_eucl_s_v - d_node_s_v) * c_2 + (pos[t] - pos[v]) * (d_eucl_v_t - d_node_v_t) * c_3
+        scale[v] += 2
+
+        for n in list(G.neighbors(v)):
+            d_eucl_n_v = dist.euclidean(pos[n], pos[v])
+
+            forces[n] += (pos[v] - pos[n]) * (d_eucl_n_v - 1) * c_4
+            scale[n] += 1
+            forces[v] += (pos[n] - pos[v]) * (d_eucl_n_v - 1) * c_5
+            scale[v] += 1
+
+    forces = forces / scale
+
+    return forces
+
+#Zeigt aktuelle EInbettung
+def show_graph(graph, pos):
     pos_dict = dict()
     for i in range(len(pos)):
-        pos_dict[str(i)] = []
+        pos_dict[i] = []
         for j in range(len(pos[i])):
-            print(pos[i][j])
-            pos_dict[str(i)] += [pos[i][j]]
+            pos_dict[i] += [pos[i][j]]
 
-    print("Pos vorher", pos)
     # Knoten des Graphen malen
     plt.subplot(121, title="Force Embedding")
     nx.draw_networkx_nodes(graph, pos_dict, node_size=50, node_color="lightblue")
     nx.draw_networkx_labels(graph, pos_dict)
-    # Kanten malen
+    #Kanten malen
+    nx.draw_networkx_edges(graph, pos_dict)
+
+    # Abbildung speichern
+    plt.show()
+
+#Malt und speichert finale Einbettung
+def draw_graph(graph, pos, filename):
+    pos_dict = dict()
+    for i in range(len(pos)):
+        pos_dict[i] = []
+        for j in range(len(pos[i])):
+            pos_dict[i] += [pos[i][j]]
+
+    # Knoten des Graphen malen
+    plt.subplot(121, title="Force Embedding")
+    nx.draw_networkx_nodes(graph, pos_dict, node_size=50, node_color="lightblue")
+    nx.draw_networkx_labels(graph, pos_dict)
+    #Kanten malen
     nx.draw_networkx_edges(graph, pos_dict)
 
     # Abbildung speichern
     path = "Abbildungen/Graph_Force_Emb/" + filename + ".png"
     plt.savefig(path)
-
-
 
 #Knoteneinbettung und Modell speichern
 def save_emb(file_name, arr, normalized):

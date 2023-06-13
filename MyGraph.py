@@ -32,11 +32,9 @@ def new_graph(number_nodes, filename):
 
     # Graph speichern
     save_graph(graph, filename)
-    result = filename.split("_")
-    G = load_graph(result[0], str(number_nodes))
 
     #AUSGABE: Der Delaunay Graph
-    return G
+    return graph
 
 #Erstellt ein 2d-numpy Array mit number Einträgen
 def new_rand_points(number):
@@ -117,7 +115,7 @@ def load_graph(identifier, number_nodes):
     #Pfad dahin wo die Datei gespeichert ist
     path = "Graphen/" + number_nodes + "/" + identifier + "_" + number_nodes
     #Lädt Daten aus Datei und erzeugt entsprechenden Graph
-    graph = nx.read_gml(path, destringizer=str)
+    graph = nx.read_gml(path, destringizer=int)
 
     #AUSGABE: Der aus der Datei geladene Graph
     return graph

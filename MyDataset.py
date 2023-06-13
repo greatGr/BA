@@ -54,7 +54,7 @@ def make_datasets(paths, graph_list, l_train, emb_type, l_test=None, normalized=
 	for i,tupel in enumerate(graph_list):
 		data_pos_train, data_neg_train = create_data(paths[i], tupel, l_train[i], emb_type, normalized, filename_list[i])
 		if l_test is not None:
-			data_pos_test, data_neg_test = create_data(tupel, l_test[i], emb_type, normalized, filename_list[i])
+			data_pos_test, data_neg_test = create_data(paths[i], tupel, l_test[i], emb_type, normalized, filename_list[i])
 		else:
 			data_pos_test, data_neg_test = torch.empty(0), torch.empty(0)
 
@@ -69,9 +69,10 @@ def make_datasets(paths, graph_list, l_train, emb_type, l_test=None, normalized=
 		data_train = torch.cat([data_pos_train, data_neg_train], 0)
 		data_test = torch.cat([data_pos_test, data_neg_test], 0)
 
+
 		# Wie viele positive und negative samples gibt es
 		print("Train Dataset: {} positive samples, {} negative samples".format(data_pos_train.size(0), data_neg_train.size(0)))
-		#print("Test Dataset: {} positive samples, {} negative samples".format(data_pos_test.size(0), data_neg_test.size(0)))
+		print("Test Dataset: {} positive samples, {} negative samples".format(data_pos_test.size(0), data_neg_test.size(0)))
 
 		if filename_list[i] == "naiv":
 			filename_list[i] = str(tupel[1]) + "_" + str(tupel[0].number_of_nodes()) + "_" + "naiv"
@@ -173,22 +174,22 @@ def limited_bfs(adj, start, level):
 	while q:
 		u = q[0]
 		q.popleft()
-		for v in adj[str(u)]:
+		for v in adj[u]:
 			# Es wird nur bis zu einem bestimmten Level gesucht
-			if (dist[int(v)] > dist[u] + 1) and (dist[u] + 1 <= level):
+			if (dist[v] > dist[u] + 1) and (dist[u] + 1 <= level):
 				# A shorter distance is found
 				# So erase all the previous parents
 				# and insert new parent u in parent[v]
-				dist[int(v)] = dist[u] + 1
-				q.append(int(v))
-				parent[int(v)].clear()
-				parent[int(v)].append(u)
+				dist[v] = dist[u] + 1
+				q.append(v)
+				parent[v].clear()
+				parent[v].append(u)
 
-			elif (dist[int(v)] == dist[u] + 1):
+			elif (dist[v] == dist[u] + 1):
 
 				# Another candidate parent for
 				# shortes path found
-				parent[int(v)].append(u)
+				parent[v].append(u)
 
 
 	# Liste aller Knoten mit der gewünschten Entfernung vom Startknoten aus
@@ -213,19 +214,19 @@ def bfs_back(adj,parent,start):
 	while q:
 		u = q[0]
 		q.popleft()
-		for (v) in adj[str(u)]:
-			if (dist[int(v)] > dist[u] + 1):
+		for v in adj[u]:
+			if (dist[v] > dist[u] + 1):
 
 				# Kürzerer Weg gefunden, alle vorherigen parents löschen und neu setzen
-				dist[int(v)] = dist[u] + 1
-				q.append(int(v))
-				parent[int(v)].clear()
-				parent[int(v)].append(u)
+				dist[v] = dist[u] + 1
+				q.append(v)
+				parent[v].clear()
+				parent[v].append(u)
 
-			elif (dist[int(v)] == dist[u] + 1):
+			elif (dist[v] == dist[u] + 1):
 
 				# Zusätzlicher kürzester Weg und parent
-				parent[int(v)].append(u)
+				parent[v].append(u)
 
 # Rekursive Funktion, die alle Wege vom Start zum Ziel findet und in paths speichert
 #n Anzahl aller Knoten im Graph
@@ -276,9 +277,9 @@ def add_data_pos(paths, node_emb):
 		#Lösche ausgewählten Weg aus der Liste
 		del paths_copy[i_path]
 
-		i_start = list(node_emb[int(path[0])])
-		i_nachbar = list(node_emb[int(path[1])])
-		i_ziel = list(node_emb[int(path[-1])])
+		i_start = list(node_emb[path[0]])
+		i_nachbar = list(node_emb[path[1]])
+		i_ziel = list(node_emb[path[-1]])
 
 		data = [i_start, i_nachbar, i_ziel, label]
 		#print("Datentripel", data)
@@ -302,8 +303,8 @@ def add_data_neg(G, paths, node_emb):
 		paths_key = paths[key]
 		#paths_key = ast.literal_eval(paths[key])
 		for i in range(len(paths_key)):
-			i_start_next = int(paths_key[i][0])
-			i_ziel_next =  int(paths_key[i][-1])
+			i_start_next = paths_key[i][0]
+			i_ziel_next =  paths_key[i][-1]
 			if (i_start != i_start_next) or (i_ziel != i_ziel_next):
 				i_start = i_start_next
 				i_ziel = i_ziel_next
@@ -314,11 +315,11 @@ def add_data_neg(G, paths, node_emb):
 			tmp_paths = [lst for lst in paths_key if lst[0] == i_start and lst[-1] == i_ziel]
 			paths_flattened = np.array(tmp_paths).flatten()
 			paths_set = set(paths_flattened)
-			for node in G[str(paths_key[i][0])]:
+			for node in G[paths_key[i][0]]:
 				if (not int(node) in paths_set):
-					emb_start = list(node_emb[int(paths_key[i][0])])
-					emb_ziel = list(node_emb[int(paths_key[i][-1])])
-					emb_nachbar = list(node_emb[int(node)])
+					emb_start = list(node_emb[paths_key[i][0]])
+					emb_ziel = list(node_emb[paths_key[i][-1]])
+					emb_nachbar = list(node_emb[node])
 
 					data = [emb_start, emb_nachbar, emb_ziel, label]
 					# Data an Liste mit Daten anhängen
@@ -327,7 +328,6 @@ def add_data_neg(G, paths, node_emb):
 
 #Speichert Tensor mit Trainings/Testdaten in Datei
 def save_data(tensor, filename):
-
 
 	path = "Daten/" + filename + ".pt"
 
@@ -405,13 +405,14 @@ def plot_save_graph(graph):
 def counting_edges(graph, path):
 	graph.edges[str(path[0]), str(path[1])]["count"] = graph.edges[str(path[0]), str(path[1])]["count"] + 1
 
-def make_tripel_list(graph, train_list, test_list, filename):
+def make_tripel_list(graph, filename, train_list, test_list=None, ):
 	create_tripel(graph, train_list, filename, train=True)
-	create_tripel(graph, test_list, filename, train=False)
+	if test_list != None:
+		create_tripel(graph, test_list, filename, train=False)
 
 #wird vielleicht noch für force embedding gebraucht?
 def create_tripel(G, tupel_liste, filename, train):
-	# Leere Listen für positive und negative Datenpaare
+	# Leere Listen für positive Datenpaare
 	tripel = []
 
 	for j in range(len(tupel_liste)):

@@ -43,12 +43,12 @@ def compute_all_paths(filename, bool_norm):
                     #computed path zu dict paths an richtiger stelle hinzufügen
                     dict_paths[dist_shortest_path] += [computed_path]
                     dict_diffs[dist_shortest_path] += [(len(computed_path) - 1) / dist_shortest_path]
+
                     #dict_diffs[dist_shortest_path] += [(len(computed_path)-1)/dist_shortest_path]
                 else:
                     count_sum += 1
 
     print("Summe nicht berechneter Wege", count_sum)
-
     save_data(dict_diffs, filename)
     plot_diffs(dict_diffs, filename)
 
@@ -90,24 +90,67 @@ def compute_path(G, start, ziel, model, embedding):
 
     path = [start]
     current = start
+
     while ziel not in G[current]:
         predictions_dict = {}
+        #Noch nicht klassifizierte Nachbarknoten des aktuellen Knotens klassifizieren und wahrscheinlichkeit speichern
         for n in G[current]:
-            if n not in path:
+            if n not in predictions_dict:
                 input = np.concatenate((embedding[int(current)], embedding[int(n)], embedding[int(ziel)]), axis=0)
                 pred_n = model(torch.tensor(input))
                 predictions_dict[n] = pred_n
-        if predictions_dict != {}:
-            max_value = max(predictions_dict.values())
-            max_key = [k for k, v in predictions_dict.items() if v == max_value][0]
+        #Nachbarn herausfiltern, die noch nicht Teil des Wegs sind
+        #print("NAchbarn des aktuellen", G[current])
+        #print(path)
+        potentials_dict = {key: value for key, value in predictions_dict.items() if key in G[current] and key not in path}
+        #print("Potentielle", potentials_dict)
+        if potentials_dict != {}:
+            max_value = max(potentials_dict.values())
+            max_key = [k for k, v in potentials_dict.items() if v == max_value][0]
             path += [max_key]
             current = max_key
         else:
-            return -1
+            while True:
+                print("Hier")
+                current = go_back(G, path, current, ziel, embedding, model)
+                if (path[-1] != current) and current != -1:
+                    print("Fehler", path[-1], current)
+                if current == -1:
+                    current = go_back(G, path, path[-1], ziel, embedding, model)
+                else:
+                    break
+
+            #return -1
     path += [ziel]
 
     return path
 
+#def draw_path_colored(G, path)
+
+def go_back(G, path, current, ziel, embedding, model):
+    print("current", current)
+    del path[-1]
+    old = current
+    current = path[-1]
+    predictions_dict = {}
+    for n in G[current]:
+        if n not in path:
+            input = np.concatenate((embedding[int(old)], embedding[int(n)], embedding[int(ziel)]), axis=0)
+            pred_n = model(torch.tensor(input))
+            predictions_dict[n] = pred_n
+    filtered_dict = {}
+    for key, value in predictions_dict.items():
+        if value < predictions_dict[old]:
+            filtered_dict[key] = value
+    if filtered_dict != {}:
+        max_value = max(filtered_dict.values())
+        max_key = [k for k, v in filtered_dict.items() if v == max_value][0]
+        current = max_key
+        path += [current]
+    else:
+        return -1
+
+    return current
 
 def backtracking(G, current, path, backtracking_list):
 
@@ -213,8 +256,8 @@ def plot_diffs(dict_diffs, filename):
 
         axs[y_ind][x_ind].hist(list(diffs_list), bins=20)
         axs[y_ind][x_ind].set_title(f"Wege Länge {int(key)}")
-        axs[y_ind][x_ind].set_xlabel("Abweichung als \n (berechn./tats.Länge)")
-        axs[y_ind][x_ind].set_ylabel("Anzahl")
+        axs[y_ind][x_ind].set_xlabel("Abweichung")
+        axs[y_ind][x_ind].set_ylabel("Häufigkeit")
 
         print("Länge {}: maximale Abweichung {}".format(int(key), max(diffs_list)))
         #print("Länge {}: minimale Abweichung {}".format(key, min(diffs)))
@@ -222,6 +265,62 @@ def plot_diffs(dict_diffs, filename):
 
     path = "Abbildungen/Histogramme_Abweichung/" + filename + ".png"
     fig.savefig(path)
+
+def plot_diff_sum(dict_diffs, filename):
+    values_list = []
+    for value in dict_diffs.values():
+        # Remove the wrapping strings using string slicing
+        value = value[1:-1]
+        # Convert the modified string back to a list using eval()
+        value_list = eval(value)
+        # Add the list to the big list
+        values_list.extend(value_list)
+
+    print("Anzahl wege ", len(values_list))
+    # fig = plt.figure()
+    # ax1 = fig.add_subplot(121)
+    #
+    # ax1.plot(x_epoch, y_acc['train'], 'bo', label='train', ms=2)
+    #
+    # ax1.set_xlabel("Abweichung")
+    # ax1.set_ylabel("Anzahl")
+
+    # Count the frequency of each number in the list
+    frequency = {}
+    for num in values_list:
+        frequency[num] = frequency.get(num, 0) + 1
+
+    # Sort the numbers in ascending order
+    numbers = sorted(frequency.keys())
+    print("Konplett richtig", frequency[1.0])
+    #Alle Abweichungen plotten
+    counts = [frequency[num] for num in numbers]
+    #Alle außer Abweichung 1
+    #counts = [frequency[num] for num in numbers[1:]]
+
+    # Plot the frequency distribution
+    plt.scatter(numbers, counts, marker='o', s=4)
+    plt.xlabel('Abweichung')
+    plt.ylabel('Häufigkeit')
+    path = "Abbildungen/Histogramme_Abweichung/" + filename + "neu.png"
+    plt.savefig(path)
+
+def draw_frequency_curve(data):
+    # Count the frequency of each number in the list
+    frequency = {}
+    for num in data:
+        frequency[num] = frequency.get(num, 0) + 1
+
+    # Sort the numbers in ascending order
+    numbers = sorted(frequency.keys())
+    counts = [frequency[num] for num in numbers]
+
+    # Plot the frequency distribution
+    plt.plot(numbers, counts, marker='o')
+    plt.xlabel('Number')
+    plt.ylabel('Frequency')
+    plt.title('Frequency Distribution')
+    plt.show()
 
 def save_data(dict, filename):
 
