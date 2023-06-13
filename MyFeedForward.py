@@ -60,7 +60,7 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
         train(model, train_dataload, optimizer, criterion, epoch, y_loss, y_acc)
         test(model, test_dataload, criterion, epoch, y_loss, y_acc)
 
-        draw_curve(epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename_data)
+        draw_curve(epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename_data + "_" + str(data_split))
 
     # Evaluate the model on the test data
     #accuracy, precision, recall = evaluate(model, test_dataload)
@@ -69,8 +69,8 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
     #print('Recall: {:.4f}'.format(recall))
 
     last_dot_index = filename_data.rfind('.')
-    save_model(model, filename_data[:last_dot_index])
-    save_data(y_loss, y_acc, filename_data)
+    save_model(model, filename_data[:last_dot_index] + "_" + str(data_split))
+    save_data(y_loss, y_acc, filename_data + "_" + str(data_split))
 
 def prep_datasets(filename_data, split):
     data_tens_train = MyDataset.load_data("Train/" + filename_data)

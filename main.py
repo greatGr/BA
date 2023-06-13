@@ -63,7 +63,7 @@ if __name__ == "__main__":
     #NaiveEmbedding.compute_embedding(G_list)
 
     # Parameter Node2Vec Einbettung
-    dim_n2v_list = [100]
+    dim_n2v_list = [75]
     l_walks_list = [nx.diameter(G_list[0][0])]
     n_walks_list = [10]
     # p: ist per default 1, 1/p ist die Wahrscheinlichkeit zum Vorgängerknoten zurückzugehen
@@ -128,13 +128,13 @@ if __name__ == "__main__":
     list_hidden = [40, 20, 10,5]
     learning_rate = 0.05
     # #num_epochs_naiv = 3
-    num_epochs_n2v = 80
+    num_epochs_n2v = 100
     #num_epochs_force = 100
 
     #Training node2vec
     for i in filename_list_n2v:
         for j in range(10):
-            MyFeedForward.train_classifier(i + "_" + str(data_split * j) + ".pt", data_split * j, dim_emb, list_hidden, learning_rate, num_epochs_n2v)
+            MyFeedForward.train_classifier(i + ".pt", data_split * (j+1), dim_emb, list_hidden, learning_rate, num_epochs_n2v)
 
     # path_dir = "Daten/Train/256"
     # for filename_n2v in os.listdir(path_dir):
