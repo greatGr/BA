@@ -138,27 +138,6 @@ if __name__ == "__main__":
     for i in filename_list_n2v:
         MyFeedForward.train_classifier(1, i + ".pt", data_split, dim_emb, [20, 15, 10, 5], learning_rate, tolerance_epochs,
                                        max_epochs_n2v)
-        MyFeedForward.train_classifier(2, i + ".pt", data_split, dim_emb, [25, 10], learning_rate, tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(3, i + ".pt", data_split, dim_emb, [16, 14, 12, 10, 8, 6, 4], learning_rate, tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(4, i + ".pt", data_split, dim_emb, [28], learning_rate, tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(5, i + ".pt", data_split, dim_emb, [20, 20, 10, 5], learning_rate, tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(6, i + ".pt", data_split, dim_emb, [20, 10, 5], learning_rate,
-                                       tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(7, i + ".pt", data_split, dim_emb, [15, 10, 5, 2], learning_rate,
-                                       tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(8, i + ".pt", data_split, dim_emb, [12, 10, 8, 6, 4], learning_rate,
-                                       tolerance_epochs,
-                                       max_epochs_n2v)
-        MyFeedForward.train_classifier(9, i + ".pt", data_split, dim_emb, [20, 10], learning_rate,
-                                       tolerance_epochs,
-                                       max_epochs_n2v)
-
 
     # path_dir = "Daten/Train/256"
     # for filename_n2v in os.listdir(path_dir):
