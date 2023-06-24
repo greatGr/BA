@@ -18,8 +18,8 @@ if __name__ == "__main__":
     # GRAPHEN ERSTELLEN/LADEN
 
     #Liste zu erstellender Graphen [(Anzahl Graphen, Knotenanzahl), ...(...,...)]
-    # tupel_liste_graphs = [(1, 20)]
-    # G_list = MyGraph.make_graphs(tupel_liste_graphs)
+    #tupel_liste_graphs = [(1, 20)]
+    #G_list = MyGraph.make_graphs(tupel_liste_graphs)
 
 
     #Einzelnen Graph laden
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # number_nodes = "20"
     # identifier = "9GExUnfS"
     # number_nodes = "5"
-    identifier = "FGSRdWvLy"
+    identifier = "FGSRdWvL"
     number_nodes = "100"
     G = MyGraph.load_graph(identifier, number_nodes)
     G_list.append((G, identifier))
