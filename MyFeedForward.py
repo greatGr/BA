@@ -12,7 +12,6 @@ import torch.nn as nn
 import torch.optim as optim
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(device)
 
 class FeedForward(nn.Module):
     def __init__(self, input, hidden):
@@ -35,6 +34,8 @@ class FeedForward(nn.Module):
 
 def train_classifier(i, filename_data, data_split, dim_emb, list_hidden, learning_rate, max_no_impr_epochs, max_epochs):
     train_dataload, test_dataload, val_dataload = prep_datasets(filename_data, data_split)
+
+    print("Device", device)
 
     y_loss = {}  # loss history
     y_loss['train'] = []
