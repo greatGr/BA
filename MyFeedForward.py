@@ -11,6 +11,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 
 class FeedForward(nn.Module):
     def __init__(self, input, hidden):
@@ -51,9 +53,11 @@ def train_classifier(i, filename_data, data_split, dim_emb, list_hidden, learnin
     fig.set_size_inches(9, 7)
 
     model = FeedForward(3*dim_emb, list_hidden)
+    model.to(device)
 
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)
     criterion = nn.BCELoss()
+    criterion.to(device)
 
     best_loss = float('inf')
     best_model = None
@@ -156,6 +160,7 @@ def val(model, val_dataload, criterion):
     with torch.no_grad():
         loss = 0.0
         for i, (inputs_batch, labels_batch) in enumerate(val_dataload):
+            inputs_batch, labels_batch = inputs_batch.to(device), labels_batch.to(device)
             # Forward pass
             outputs = model(inputs_batch)
             # Compute loss
@@ -172,6 +177,7 @@ def train(model, train_dataloader, optimizer, criterion, epoch, y_loss, y_acc):
     running_corrects = 0.0
 
     for i, (inputs_batch, labels_batch) in enumerate(train_dataloader):
+        inputs_batch, labels_batch = inputs_batch.to(device), labels_batch.to(device)
         #Reset all gradients
         optimizer.zero_grad()
         #Forward pass
@@ -220,6 +226,7 @@ def test(model, test_dataloader, criterion, epoch, y_loss, y_acc):
 
     with torch.no_grad():
         for features, labels in test_dataloader:
+            features, labels = features.to(device), labels.to(device)
 
             outputs = model(features)
             predicted = outputs.detach().clone()
