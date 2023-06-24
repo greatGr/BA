@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # number_nodes = "20"
     # identifier = "9GExUnfS"
     # number_nodes = "5"
-    identifier = "4iBPVTty"
+    identifier = "FGSRdWvLy"
     number_nodes = "100"
     G = MyGraph.load_graph(identifier, number_nodes)
     G_list.append((G, identifier))
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     #Alle kürzesten Wege der Graphen berechnen
     asp_list = []
     for tup in G_list:
-        tupel_liste_paths = []
+        tupel_liste_paths= []
         for i in range(2, nx.diameter(tup[0]) + 1):
             tupel_liste_paths += [(tup[0].number_of_nodes(), i)]
 
