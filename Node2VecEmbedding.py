@@ -31,7 +31,7 @@ def compute_node_embedding(graph, dim, l_walks, n_walks, param_p, param_q, windo
     #negative: soll negative sampling verwendet werden?
     #batch_words: Anzahl an Wörter, die ein worker auf einmal übergeben bekommt
     #dimensions and workers are automatically passed (from the Node2Vec constructor)
-    model = node2vec.fit(window=window_size, min_count=1, batch_words=1, sg=1, negative=1)
+    model = node2vec.fit(window=window_size, sg=1, negative=1)
 
     #AUSGABE:
     return model
