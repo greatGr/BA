@@ -18,25 +18,20 @@ if __name__ == "__main__":
     # GRAPHEN ERSTELLEN/LADEN
 
     #Liste zu erstellender Graphen [(Anzahl Graphen, Knotenanzahl), ...(...,...)]
-    #tupel_liste_graphs = [(1, 20)]
-    #G_list = MyGraph.make_graphs(tupel_liste_graphs)
+    tupel_liste_graphs = [(1, 50)]
+    G_list = MyGraph.make_graphs(tupel_liste_graphs)
 
 
     #Einzelnen Graph laden
-    G_list = []
+    #G_list = []
     # identifier = "WgVnqVBE"
     # number_nodes = "20"
     # identifier = "9GExUnfS"
     # number_nodes = "5"
-    identifier = "FGSRdWvL"
-    number_nodes = "100"
-    G = MyGraph.load_graph(identifier, number_nodes)
-    G_list.append((G, identifier))
-    G_list.append((G, identifier))
-    G_list.append((G, identifier))
-    G_list.append((G, identifier))
-    G_list.append((G, identifier))
-    G_list.append((G, identifier))
+    #identifier = ""
+    #number_nodes = "50"
+    #G = MyGraph.load_graph(identifier, number_nodes)
+    #G_list.append((G, identifier))
 
     # print("Diam", nx.diameter(G))
     # for i in range(6):
@@ -66,15 +61,15 @@ if __name__ == "__main__":
     #NaiveEmbedding.compute_embedding(G_list)
 
     # Parameter Node2Vec Einbettung
-    dim_n2v_list = [50] * 6
-    l_walks_list = [nx.diameter(G_list[0][0])] * 6
-    n_walks_list = [5, 10, 20, 30, 50, 100]
+    dim_n2v_list = [30]
+    l_walks_list = [nx.diameter(G_list[0][0])]
+    n_walks_list = [10]
     # p: ist per default 1, 1/p ist die Wahrscheinlichkeit zum Vorgängerknoten zurückzugehen
-    param_p_list = [10] * 6
+    param_p_list = [10]
     # q: ist per default 1, 1/q ist die Wahrscheinlichkeit zu Knoten ohne Kante zum Vorgängerknoten zu gehen
     # falls q>1 werden nahe Knoten bevorzugt, falls q<1 ähnlicher zu DFS
-    param_q_list = [0.1] * 6
-    w_size_list = [2] * 6
+    param_q_list = [0.1]
+    w_size_list = [1]
 
     # for i in range(len(G_list)):
     #     dim_n2v = round(G_list[i][0].number_of_nodes()/i)
@@ -131,25 +126,48 @@ if __name__ == "__main__":
 
     #Parameter für Training neuronales Netz
     data_split = 1
-    dim_emb = 50
-    list_hidden = [50, 20, 10, 5]
+    dim_emb = 30
+    #list_hidden = [30, 20, 10, 5]
     learning_rate = 0.05
     # #num_epochs_naiv = 3
-    num_epochs_n2v = 100
+    max_epochs_n2v = 500
+    tolerance_epochs = 20
     #num_epochs_force = 100
 
     #Training node2vec
     for i in filename_list_n2v:
-        MyFeedForward.train_classifier(i + ".pt", data_split, dim_emb, list_hidden, learning_rate, num_epochs_n2v)
+        MyFeedForward.train_classifier(1, i + ".pt", data_split, dim_emb, [20, 15, 10, 5], learning_rate, tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(2, i + ".pt", data_split, dim_emb, [25, 10], learning_rate, tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(3, i + ".pt", data_split, dim_emb, [16, 14, 12, 10, 8, 6, 4], learning_rate, tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(4, i + ".pt", data_split, dim_emb, [28], learning_rate, tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(5, i + ".pt", data_split, dim_emb, [20, 20, 10, 5], learning_rate, tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(6, i + ".pt", data_split, dim_emb, [20, 10, 5], learning_rate,
+                                       tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(7, i + ".pt", data_split, dim_emb, [15, 10, 5, 2], learning_rate,
+                                       tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(8, i + ".pt", data_split, dim_emb, [12, 10, 8, 6, 4], learning_rate,
+                                       tolerance_epochs,
+                                       max_epochs_n2v)
+        MyFeedForward.train_classifier(9, i + ".pt", data_split, dim_emb, [20, 10], learning_rate,
+                                       tolerance_epochs,
+                                       max_epochs_n2v)
+
 
     # path_dir = "Daten/Train/256"
     # for filename_n2v in os.listdir(path_dir):
-    #     MyFeedForward.train_classifier(filename_n2v, data_split, dim_emb, list_hidden, learning_rate, num_epochs_n2v)
+    #     MyFeedForward.train_classifier(filename_n2v, data_split, dim_emb, list_hidden, learning_rate, tolerance_epochs, max_epochs_n2v)
 
     #Training naive Einbettung
     # for tup in G_list:
     #      filename_data_naiv = str(tup[1]) + "_" + str(tup[0].number_of_nodes()) + "_naiv.pt"
-    #      MyFeedForward.train_classifier(filename_data_naiv, data_split, tup[0].number_of_nodes(), list_hidden, learning_rate, num_epochs_naiv)
+    #      MyFeedForward.train_classifier(filename_data_naiv, data_split, tup[0].number_of_nodes(), list_hidden, learning_rate, tolerance_epochs, max_epochs_naiv)
 
 
     # WEGE MIT CLASSIFIER BERECHNEN

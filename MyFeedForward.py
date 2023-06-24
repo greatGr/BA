@@ -31,8 +31,8 @@ class FeedForward(nn.Module):
         return out
 
 
-def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_rate, num_epochs):
-    train_dataload, test_dataload = prep_datasets(filename_data, data_split)
+def train_classifier(i, filename_data, data_split, dim_emb, list_hidden, learning_rate, max_no_impr_epochs, max_epochs):
+    train_dataload, test_dataload, val_dataload = prep_datasets(filename_data, data_split)
 
     y_loss = {}  # loss history
     y_loss['train'] = []
@@ -55,12 +55,29 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)
     criterion = nn.BCELoss()
 
-    # Training loop
-    for epoch in range(num_epochs):
-        train(model, train_dataload, optimizer, criterion, epoch, y_loss, y_acc)
-        test(model, test_dataload, criterion, epoch, y_loss, y_acc)
+    best_loss = float('inf')
+    best_model = None
+    best_epoch = 0
+    no_improvement_epochs = 0
 
-        draw_curve(epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename_data + "_" + str(data_split))
+    # Training loop
+    for epoch in range(max_epochs):
+        train(model, train_dataload, optimizer, criterion, epoch, y_loss, y_acc)
+        val_loss = val(model, val_dataload, criterion)
+        if val_loss < best_loss:
+            best_loss = val_loss
+            best_model = model.state_dict()
+            no_improvement_epochs = 0
+            best_epoch = epoch
+        else:
+            no_improvement_epochs += 1
+
+        if no_improvement_epochs >= max_no_impr_epochs:
+            print(f'Early stopping at epoch {epoch}')
+            break
+
+        test(model, test_dataload, criterion, epoch, y_loss, y_acc)
+        draw_curve(epoch, x_epoch, y_loss, y_acc, fig, ax0, ax1, filename_data + "_" + str(i))
 
     # Evaluate the model on the test data
     #accuracy, precision, recall = evaluate(model, test_dataload)
@@ -69,8 +86,16 @@ def train_classifier(filename_data, data_split, dim_emb, list_hidden, learning_r
     #print('Recall: {:.4f}'.format(recall))
 
     last_dot_index = filename_data.rfind('.')
-    save_model(model, filename_data[:last_dot_index] + "_" + str(data_split))
-    save_data(y_loss, y_acc, filename_data + "_" + str(data_split))
+    save_model(best_model, filename_data[:last_dot_index] + "_" + str(i))
+    new_y_loss = {}
+    new_y_acc = {}
+    for key, value in y_loss.items():
+        truncated_list = value[:best_epoch]
+        new_y_loss[key] = truncated_list
+    for key, value in y_acc.items():
+        truncated_list = value[:best_epoch]
+        new_y_acc[key] = truncated_list
+    save_data(new_y_loss, new_y_acc, filename_data + "_" + str(i))
 
 def prep_datasets(filename_data, split):
     data_tens_train = MyDataset.load_data("Train/" + filename_data)
@@ -81,15 +106,23 @@ def prep_datasets(filename_data, split):
 
     if (data_tens_test.numel() == 0):
         data_tens_train = data_tens_train[torch.randperm(data_tens_train.size()[0])]
+
         #Wie viel Prozent des ganzen Datensatzes werden verwendet
         part = math.ceil(data_tens_train.size()[0] * split)
         data_tens_train = data_tens_train[:part]
+
         # In Trainings- und Testdaten aufteilen
-        border = math.ceil(data_tens_train.size()[0] * 0.7)
-        data_train = data_tens_train[:border]
-        data_test = data_tens_train[border:]
+        border_1 = math.ceil(data_tens_train.size()[0] * 0.7)
+        data_trainn = data_tens_train[:border_1]
+        data_test = data_tens_train[border_1:]
+        border_2 = math.ceil(data_trainn.size()[0] * 0.75)
+        data_train = data_trainn[:border_2]
+        data_val = data_trainn[border_2:]
     else:
-        data_train = data_tens_train[torch.randperm(data_tens_train.size()[0])]
+        data_trainn = data_tens_train[torch.randperm(data_tens_train.size()[0])]
+        border_2 = math.ceil(data_trainn.size()[0] * 0.75)
+        data_train = data_trainn[:border_2]
+        data_val = data_trainn[border_2:]
         data_test = data_tens_test[torch.randperm(data_tens_test.size()[0])]
 
     # Feature und Label Tensoren erstellen
@@ -102,15 +135,34 @@ def prep_datasets(filename_data, split):
     data_test_features = torch.flatten(data_test_features, 1, 2)
     data_test_labels = data_test[:, 3, 0]
     data_test_labels = torch.unsqueeze(data_test_labels, 1)
+    data_val_features = data_val[:, :3]
+    data_val_features = torch.flatten(data_val_features, 1, 2)
+    data_val_labels = data_val[:, 3, 0]
+    data_val_labels = torch.unsqueeze(data_val_labels, 1)
 
     # Trainings- und Testdatenset erstellen
     data_train = TensorDataset(data_train_features, data_train_labels)
     data_test = TensorDataset(data_test_features, data_test_labels)
+    data_val = TensorDataset(data_val_features, data_val_labels)
     # Trainings- und Testdaten wrappen
     train_dataloader = DataLoader(data_train, batch_size=16, shuffle=True)
     test_dataloader = DataLoader(data_test, batch_size=16, shuffle=True)
+    val_dataloader = DataLoader(data_val, batch_size=16, shuffle=True)
 
-    return train_dataloader, test_dataloader
+    return train_dataloader, test_dataloader, val_dataloader
+
+def val(model, val_dataload, criterion):
+    model.eval()
+    with torch.no_grad():
+        loss = 0.0
+        for i, (inputs_batch, labels_batch) in enumerate(val_dataload):
+            # Forward pass
+            outputs = model(inputs_batch)
+            # Compute loss
+            loss += criterion(outputs, labels_batch)
+    loss /= len(val_dataload)
+
+    return loss
 
 def train(model, train_dataloader, optimizer, criterion, epoch, y_loss, y_acc):
 
